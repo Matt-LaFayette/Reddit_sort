@@ -1,0 +1,46 @@
+<html>
+<head>
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+
+</head>
+{% extends "navtest.html" %}
+</br>
+</br>
+<body>
+{% block content %}
+
+<h1>Hello And Welcome to the Reddit Sorting App!</h1>
+
+</br>
+<h2 style="text-align: center;">Top 10 Favorite Subs</h2>
+
+
+
+{% for x,y in zip(name_list, value_list) %}
+<div class="card">
+  <h3>{{str(x)}}</h3>
+  <div class="container"> 
+    <p style="text-align: center;">
+    {{str(y)}}
+    <br>Saved<br>
+    Posts
+	</p>
+  </div>
+</div>
+{% endfor %}
+<!--
+<form action="/" method="POST">
+<input type ="submit" name="name" value="View Tables">
+</form>	
+	{% for table in results %}
+	<h2>{{table.name}}</h2>
+	{% endfor %}
+-->
+<!---->
+<!---->
+{% endblock %}
+
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+</head>
+<body>
+{% extends "navtest.html" %}
+
+{% block content %}
+</br>
+<h1>DELETE POSTS</h1>
+<table class="blueTable">
+	<tr>
+		<th>Number</th>
+		<th>Post</th>
+		<th>Link</th>
+		<th>Category</th>
+		<th>Change?</th>
+	</tr>
+	{% for post in results %}
+	<tr>
+		<td>{{loop.index}}</td>
+		<td>{{post['title']}}</td>
+		<td><a href="{{post['link']}}" target='_blank'>Link</a></td>
+		<td>{{post['category']}}</td>
+		<td>
+			<form action="{{url_for('deleteposts')}}" method="Post">
+				<input type="checkbox" name="{{loop.index}}delete" value="delete">
+						
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+
+<br/>
+<input type ="submit" name="delete" value="okdelete">
+</form>
+	
+</br>
+</br>
+{% endblock %}
+</body>
+
+<!--
+<div id="footer">
+<p>by Matt</p>
+</div>
+-->
+
+</html>

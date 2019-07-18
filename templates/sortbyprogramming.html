@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sort by</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+</head>
+{% extends "navtest.html" %}
+<body>
+	{% block content %}
+</br>
+<h1>Posts related to Programming</h1>
+</br>	
+<table class="blueTable">
+	<tr>
+		<th>#</th>
+		<th>Post</th>
+		<th>Link</th>
+		<th>Category</th>
+	</tr>
+		{% for post in results %}
+	<tr>
+		<td>{{loop.index}}</td>
+		<td>{{post['title']}}</td>
+		<td><a href="{{post['link']}}" target='_blank'>Link</a></td>
+		<td>{{post['category']}}</td>
+	</tr>
+		{% endfor %}
+</table>	
+
+	{% endblock %}
+
+
+</body>
+</html>
