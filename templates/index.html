@@ -1,7 +1,6 @@
+{% include "bootstrap/base.html" %}
 <html>
 <head>
-
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 
 </head>
 {% extends "navtest.html" %}
@@ -17,28 +16,42 @@
 
 
 
-{% for x,y in zip(name_list, value_list) %}
-<div class="card">
+{% for (x,y) in zip(name_list, value_list) %}
+<div class="card1">
+  <a href="#{{str(x)}}" data-toggle="modal">
   <h3>{{str(x)}}</h3>
-  <div class="container"> 
+  <div class="container1"> 
     <p style="text-align: center;">
     {{str(y)}}
-    <br>Saved<br>
-    Posts
+    <br>Posts<br>
+    Saved
 	</p>
   </div>
 </div>
+<div class="modal fade" id="{{str(x)}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background-image: url('')">
+        <h3 class="modal-title" id="exampleModalLabel" style="text-align: center; color: #b04c41">r/{{str(x)}}</h3>
+        <button type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {{desc_list[loop.index0]}}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- {{bkgrnd[loop.index0]}} for background of subreddit -->
 {% endfor %}
-<!--
-<form action="/" method="POST">
-<input type ="submit" name="name" value="View Tables">
-</form>	
-	{% for table in results %}
-	<h2>{{table.name}}</h2>
-	{% endfor %}
--->
-<!---->
-<!---->
+
+
+
+
 {% endblock %}
 
 

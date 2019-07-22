@@ -5,13 +5,20 @@ import pprint
 import sqlite3
 import collections
 from config import *
+from flask_bootstrap import Bootstrap
 #from flask_wtf import FlaskForm
 #from wtforms import StringField, PasswordField, BooleanField, SubmitField
 #from wtforms.validators import DataRequired
 
 pp = pprint.PrettyPrinter(indent=4)
 
+if __name__ == '__main__':
+	app.run(debug=True)
+
 app = Flask(__name__)
+
+
+bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
 reddit = praw.Reddit(client_id=client_id,
@@ -19,10 +26,34 @@ reddit = praw.Reddit(client_id=client_id,
                      user_agent=client_secret,
                      username=username,
                      password=password)
+
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
 
+results = []
 
+for post in test:
+	results.append(post.subreddit.display_name)
+
+
+counter = collections.Counter(results).most_common(10)
+
+name_list = []
+value_list = []
+desc_list = []
+html_list = []
+css_list = []
+
+for x,y in counter:
+	name_list.append(x)
+	value_list.append(y)
+
+
+
+for b in name_list:
+	desc_list.append(reddit.subreddit(b).public_description)
+	html_list.append(reddit.subreddit(b).description_html)
+	css_list.append(reddit.subreddit(b).stylesheet())
 
 #prints avail dicts
 	#pp.pprint(reddit.redditor('here_comes_ice_king').saved())
@@ -67,8 +98,7 @@ def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
-if __name__ == '__main__':
-	app.run(debug=True)
+
 
 
 @app.route('/updateTable', methods=['GET', 'POST'])
@@ -153,7 +183,10 @@ def index():
                      username=username,
                      password=password)
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
-	
+	subscribed = list(reddit.user.subreddits(limit=None))
+
+	sub_list = []
+	img = []
 	results = []
 
 	for post in test:
@@ -161,14 +194,35 @@ def index():
 
 	counter = collections.Counter(results).most_common(10)
 
-	name_list = []
-	value_list = []
+	for x in counter:
+		img.append(x[0])
 
-	for x,y in counter:
-		name_list.append(x)
-		value_list.append(y)
+	for x in subscribed:
+		sub_list.append(x.display_name)
+
+	bkgrnd = []
+
+	for i in subscribed:
+		for x in range (0,len(img)):
+			if i.display_name == img[x]:
+				bkgrnd.append(i.banner_background_image)
+#	results = []
+	#for p in bkgrnd:
+	#	print(p)
+	
+#	for post in test:
+#		results.append(post.subreddit.display_name)
+
+#	counter = collections.Counter(results).most_common(10)
+
+#	name_list = []
+#	value_list = []
+
+#	for x,y in counter:
+#		name_list.append(x)
+#		value_list.append(y)
 		
-	return render_template('index.html', name_list=name_list, value_list=value_list, zip=zip, str=str)
+	return render_template('index.html', bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/birthdays')
