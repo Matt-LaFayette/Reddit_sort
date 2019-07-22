@@ -164,11 +164,14 @@ def addRedditInfo():
 		title = trim_title(post.title)
 		empty = "None"
 		db.execute('insert or ignore into posts (id, title, link, category) values (?, ?, ?, ?)', [str(post), title, link, empty])
+		db.execute('SELECT changes();')
 	db.commit()
+
 	return '''stuff added<br/>
 	<button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>
 	</br>
 	<button type='button'><a href='http://127.0.0.1:5000/viewresults'>View Results</a></button>
+	
 	'''
 
 @app.route('/', methods=['GET', 'POST'])
@@ -209,7 +212,7 @@ def index():
 #	results = []
 	#for p in bkgrnd:
 	#	print(p)
-	
+
 #	for post in test:
 #		results.append(post.subreddit.display_name)
 
@@ -307,14 +310,14 @@ def deleteposts():
 			st = str(removex)
 			#print (st)
 			removefield = request.form.get(st)
-			post_title = post['title']
+			post_title = post['id']
 			#removefield = request.form['{}'.format(strdel)]
 			#print(removefield)
 			x = x + 1
 			if removefield == 'delete':
 				print("yes")
 				db = get_db()
-				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.execute("DELETE FROM posts WHERE id = (?);", [post_title])
 				db.commit()
 		return redirect(url_for('deleteposts'))
 	return render_template("deleteposts.html", results=results)
@@ -342,7 +345,7 @@ def unfavpost():
 				submission.unsave()
 				print ("unsaved")
 				db = get_db()
-				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.execute("DELETE FROM posts WHERE id = (?);", [test])
 				db.commit()
 				print ("deleted")
 		return redirect(url_for('unfavpost'))
@@ -367,9 +370,8 @@ def unfavunsort():
 				print(test + " " + name)
 				submission = reddit.submission(id=test)
 				submission.unsave()
-				print ("unsaved")
 				db = get_db()
-				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.execute("DELETE FROM posts WHERE id = (?);", [test])
 				db.commit()
 				print ("deleted")
 		return redirect(url_for('unfavunsort'))
