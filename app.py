@@ -22,11 +22,7 @@ reddit = praw.Reddit(client_id=client_id,
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
 
-#reddit = praw.Reddit(client_id='EM1GUVjAN4bAYg',
- #                    client_secret='DRL5ZPi9zNRBD2DRRmPCwmlUTeg',
-  #                   user_agent='for reddit saved sort',
-   #                  username='here_comes_ice_king',
-    #                 password='Elements1')
+
 
 #prints avail dicts
 	#pp.pprint(reddit.redditor('here_comes_ice_king').saved())
@@ -96,8 +92,7 @@ def updateTable():
 				if cat != post['category']:
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
 					db.commit()
-			return redirect(url_for('updateTable'))
-		
+			return redirect(url_for('updateTable'))		
 	return render_template('updateTable.html', categories=categories, results=results)
 
 @app.route('/updateTableUnsorted', methods=['GET', 'POST'])
@@ -127,11 +122,11 @@ def updateTableUnsorted():
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
-	reddit = praw.Reddit(client_id='EM1GUVjAN4bAYg',
-                     client_secret='DRL5ZPi9zNRBD2DRRmPCwmlUTeg',
-                     user_agent='for reddit saved sort',
-                     username='here_comes_ice_king',
-                     password='Elements1')
+	reddit = praw.Reddit(client_id=client_id,
+                     client_secret=client_secret,
+                     user_agent=user_agent,
+                     username=username,
+                     password=password)
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	db = get_db()
 	for post in test:
@@ -152,11 +147,11 @@ def index():
 	env.globals.update(zip=zip)
 	env.globals.update(str=str)
 
-	reddit = praw.Reddit(client_id='EM1GUVjAN4bAYg',
-                     client_secret='DRL5ZPi9zNRBD2DRRmPCwmlUTeg',
-                     user_agent='for reddit saved sort',
-                     username='here_comes_ice_king',
-                     password='Elements1')
+	reddit = praw.Reddit(client_id=client_id,
+                     client_secret=client_secret,
+                     user_agent=user_agent,
+                     username=username,
+                     password=password)
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	
 	results = []
@@ -252,24 +247,79 @@ def deleteposts():
 		db = get_db()
 		results = posts_all()
 		x = 1
-		if request.form['delete'] == 'okdelete':
-			for post in results:
-				removex = str(x) + 'delete'
-			#print(removex)
-			#test = request.args[removex]
-			#print (test)
-				print(removefield)
-				removefield = request.form[removex]
-				print(removefield)
-				x = x + 1
-				if removefield == 'delete':
-					print("yes")
-					#db = get_db()
-					#db.execute("DELETE FROM posts WHERE title = (?);", (post_title))
-					#db.commit()
-			return redirect(url_for('deleteposts'))
+		#if request.form
+		for post in results:
+			removex = str(x) + 'delete'
+			st = str(removex)
+			#print (st)
+			removefield = request.form.get(st)
+			post_title = post['title']
+			#removefield = request.form['{}'.format(strdel)]
+			#print(removefield)
+			x = x + 1
+			if removefield == 'delete':
+				print("yes")
+				db = get_db()
+				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.commit()
+		return redirect(url_for('deleteposts'))
 	return render_template("deleteposts.html", results=results)
 
+
+@app.route('/unfavpost', methods=['GET', 'POST'])
+def unfavpost():
+	db = get_db()
+	results = posts_all()
+	if request.method == 'POST':
+		db = get_db()
+		results = posts_all()
+		x = 1
+		for post in results:
+			removex = str(x) + 'unsub'
+			st = str(removex)
+			unsub = request.form.get(st)
+			post_title = post['title']
+			x = x + 1
+			test = post['id']
+			name = post['title']
+			if unsub == 'unsub':
+				print(test + " " + name)
+				submission = reddit.submission(id=test)
+				submission.unsave()
+				print ("unsaved")
+				db = get_db()
+				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.commit()
+				print ("deleted")
+		return redirect(url_for('unfavpost'))
+	return render_template("unfavpost.html", results=results)
+
+@app.route('/unfavunsort', methods=['GET', 'POST'])
+def unfavunsort():
+	db = get_db()
+	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "None"')
+	results = cur.fetchall()
+	if request.method == 'POST':
+		x = 1
+		for post in results:
+			removex = str(x) + 'unsub'
+			st = str(removex)
+			unsub = request.form.get(st)
+			post_title = post['title']
+			x = x + 1
+			test = post['id']
+			name = post['title']
+			if unsub == 'unsub':
+				print(test + " " + name)
+				submission = reddit.submission(id=test)
+				submission.unsave()
+				print ("unsaved")
+				db = get_db()
+				db.execute("DELETE FROM posts WHERE title = (?);", [post_title])
+				db.commit()
+				print ("deleted")
+		return redirect(url_for('unfavunsort'))
+	return render_template("unfavunsort.html", results=results)
 
 
 #print(vars(test))

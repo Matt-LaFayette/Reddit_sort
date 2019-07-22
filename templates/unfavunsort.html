@@ -8,6 +8,8 @@
 {% block content %}
 </br>
 <h1>DELETE POSTS</h1>
+<button type="button"><a href="{{url_for('unfavpost')}}">View All</a></button>
+</br>
 <table class="blueTable">
 	<tr>
 		<th>Number</th>
@@ -23,8 +25,8 @@
 		<td><a href="{{post['link']}}" target='_blank'>Link</a></td>
 		<td>{{post['category']}}</td>
 		<td>
-			<form action="{{url_for('deleteposts')}}" method="Post">
-				<input type="submit" name="{{loop.index}}delete" value="delete">
+			<form action="{{url_for('unfavunsort')}}" method="Post">
+				<input type="submit" name="{{loop.index}}unsub" value="unsub">
 						
 		</td>
 	</tr>
@@ -39,11 +41,5 @@
 </br>
 {% endblock %}
 </body>
-
-<!--
-<div id="footer">
-<p>by Matt</p>
-</div>
--->
 
 </html>
