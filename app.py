@@ -114,10 +114,10 @@ def updateTable():
 				db = get_db()
 				catx = str(x) + 'cat'
 				results = posts_all()
-				cat = request.form[catx]
-				#print(cat)
+				cat = request.form.get(catx)
+				print(cat)
 				post_title = post['title']
-				#print(post_title)
+				print(post_title)
 				x = x + 1
 				if cat != post['category']:
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
@@ -133,12 +133,13 @@ def updateTableUnsorted():
 	if request.method == 'POST':
 		x = 1
 		results2 = posts_unsorted()
-		if request.form['name'] == 'View Tables':
+		if request.form.get('name') == 'View Tables':
 			for post in results2:
 				db = get_db()
 				catx = str(x) + 'cat2'
 				results2 = posts_unsorted()
-				cat = request.form[catx]
+				#print(catx)
+				cat = request.form.get(catx)
 				#print(cat)
 				post_title = post['title']
 				#print(post_title)
@@ -157,7 +158,7 @@ def addRedditInfo():
 #                     user_agent=user_agent,
 #                     username=username,
 #                     password=password)
-#	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	db = get_db()
 	for post in test:
 		link = 'https://www.reddit.com' + post.permalink
@@ -268,6 +269,21 @@ def sortbyfood():
 	results = cur.fetchall()
 	return render_template("sortbyfood.html", results=results)
 
+@app.route('/sortbyraspberrypi', methods=['GET', 'POST'])
+def sortbyraspberrypi():
+	db = get_db()
+	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Food"')
+	results = cur.fetchall()
+	return render_template("sortbyraspberrypi.html", results=results)
+	
+
+@app.route('/sortbysecurity', methods=['GET', 'POST'])
+def sortbysecurity():
+	db = get_db()
+	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Security"')
+	results = cur.fetchall()
+	return render_template("sortbysecurity.html", results=results)
+
 @app.route('/sortbygaming', methods=['GET', 'POST'])
 def sortbygaming():
 	db = get_db()
@@ -304,15 +320,11 @@ def deleteposts():
 		db = get_db()
 		results = posts_all()
 		x = 1
-		#if request.form
 		for post in results:
 			removex = str(x) + 'delete'
 			st = str(removex)
-			#print (st)
 			removefield = request.form.get(st)
 			post_title = post['id']
-			#removefield = request.form['{}'.format(strdel)]
-			#print(removefield)
 			x = x + 1
 			if removefield == 'delete':
 				print("yes")
@@ -376,28 +388,3 @@ def unfavunsort():
 				print ("deleted")
 		return redirect(url_for('unfavunsort'))
 	return render_template("unfavunsort.html", results=results)
-
-
-#print(vars(test))
-
-#@app.route('/viewtables')
-#def viewtables():
-#	db = get_db()
-#	cur = db.execute('SELECT name FROM sqlite_master WHERE type="table";')
-#	db.commit()
-#	results = cur.fetchall()
-#	tables = []
-#	for result in results:
-#		for test in result:
-#			tables.append(test)
-	#return str(results)
-
-#def viewtabless():
-#	db = get_db()
-#	cur = db.execute('SELECT name FROM sqlite_master WHERE type="table";')
-#	db.commit()
-#	results = cur.fetchall()
-#	tables = []
-#	for result in results:
-#		for test in result:
-#			return test

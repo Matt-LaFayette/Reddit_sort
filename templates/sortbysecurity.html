@@ -1,26 +1,24 @@
+<!DOCTYPE html>
 <html>
 <head>
-{% include "bootstrap/base.html" %}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+	<title>Sort by</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
-<body>
 {% extends "navtest.html" %}
-
-{% block content %}
+<body>
+	{% block content %}
 </br>
-<h1>All Posts</h1>
-
+<h1>Security</h1>
+</br>
 <div class="limiter">
 		<div class="container-table100">
 			<div class="wrap-table100">
 					<div class="table">
-
 						<div class="row header">
 							<div id="1" class="cell">Number</div>
 							<div class="cell">Post</div>
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
-							<div class="cell">Change?</div>
 						</div>
 						{% for post in results %}
 						<div class="row">
@@ -28,26 +26,12 @@
 							<div class="cell" data-title="Post">{{post['title']}}</div>
 							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{post['category']}}</div>
-							<div class="cell" data-title="Change?">
-								<form action="{{url_for('updateTable')}}" method="POST">
-									<select name="{{loop.index}}cat">
-    									{% for categories in categories %}
-    										<option value= "{{categories}}" {% if post['category'] == categories %} SELECTED{% endif %}>{{ categories }}</option>
-    									{% endfor %}
-									</select>
-							</div>
 						</div>
-
 						{% endfor %}
-					<button class="btn btn-primary" type="submit" name="name" value="View Tables">Update</button>
-						</div>
+				</div>
 </div>
-<br/>
-</form>	
-</br>
-</br>
-{% endblock %}
+	{% endblock %}
+
+
 </body>
-
-
 </html>

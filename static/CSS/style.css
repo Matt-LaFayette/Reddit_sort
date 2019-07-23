@@ -524,6 +524,7 @@ a:visited {
 
 .row .cell:nth-child(4) {
   width: 11%;
+  text-align: center;
 }
 
 

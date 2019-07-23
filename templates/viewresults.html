@@ -7,6 +7,30 @@
 {% block content %}
 
 </br>
+
+<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+					<div class="table">
+
+						<div class="row header">
+							<div id="1" class="cell">Number</div>
+							<div class="cell">Post</div>
+							<div class="cell">Link</div>
+							<div class="cell">Category</div>
+						</div>
+						{% for post in results %}
+						<div class="row">
+							<div class="cell" data-title="Number">{{loop.index}}</div>
+							<div class="cell" data-title="Post">{{post['title']}}</div>
+							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
+							<div class="cell" data-title="Category">{{post['category']}}</div>
+						</div>
+						{% endfor %}
+				</div>
+</div>
+
+<!--
 <table class="blueTable">
 	<tr>
 		<th>ID</th>
@@ -24,7 +48,7 @@
 {% endfor %}
 </table>	
 {% endblock %}	
-
+-->
 </br>
 </body>	
 </html>

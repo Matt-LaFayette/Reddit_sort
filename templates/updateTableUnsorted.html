@@ -1,4 +1,5 @@
 <html>
+{% include "bootstrap/base.html" %}
 <head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
@@ -27,8 +28,8 @@
 							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{post['category']}}</div>
 							<div class="cell" data-title="Change?">
-								<form action="{{url_for('updateTable')}}" method="POST">
-									<select name="{{loop.index}}cat">
+								<form action="{{url_for('updateTableUnsorted')}}" method="POST">
+									<select name="{{loop.index}}cat2">
     									{% for categories in categories %}
     										<option value= "{{categories}}" {% if post['category'] == categories %} SELECTED{% endif %}>{{ categories }}</option>
     									{% endfor %}
@@ -37,11 +38,16 @@
 						</div>
 
 						{% endfor %}
-						</div>
+					</div>
+					<button class="btn btn-primary" type="submit" name="name" value="View Tables">Update</button>
+					</form>
+						
+					</br>
+<!--<input type ="submit" name="name" value="View Tables">-->
+
 </div>
 <br/>
-<input type ="submit" name="name" value="View Tables">
-</form>	
+
 </br>
 </br>
 {% endblock %}

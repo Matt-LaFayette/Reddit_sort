@@ -9,23 +9,28 @@
 	{% block content %}
 </br>
 <h1>Funny Posts</h1>
-</br>	
-<table class="blueTable">
-	<tr>
-		<th>#</th>
-		<th>Post</th>
-		<th>Link</th>
-		<th>Category</th>
-	</tr>
-		{% for post in results %}
-	<tr>
-		<td>{{loop.index}}</td>
-		<td>{{post['title']}}</td>
-		<td><a href="{{post['link']}}" target='_blank'>Link</a></td>
-		<td>{{post['category']}}</td>
-	</tr>
-		{% endfor %}
-</table>	
+</br>
+<div class="limiter">
+		<div class="container-table100">
+			<div class="wrap-table100">
+					<div class="table">
+
+						<div class="row header">
+							<div id="1" class="cell">Number</div>
+							<div class="cell">Post</div>
+							<div class="cell">Link</div>
+							<div class="cell">Category</div>
+						</div>
+						{% for post in results %}
+						<div class="row">
+							<div class="cell" data-title="Number">{{loop.index}}</div>
+							<div class="cell" data-title="Post">{{post['title']}}</div>
+							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
+							<div class="cell" data-title="Category">{{post['category']}}</div>
+						</div>
+						{% endfor %}
+				</div>
+</div>
 
 	{% endblock %}
 
