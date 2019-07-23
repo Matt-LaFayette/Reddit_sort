@@ -152,12 +152,12 @@ def updateTableUnsorted():
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
-	reddit = praw.Reddit(client_id=client_id,
-                     client_secret=client_secret,
-                     user_agent=user_agent,
-                     username=username,
-                     password=password)
-	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+#	reddit = praw.Reddit(client_id=client_id,
+#                     client_secret=client_secret,
+#                     user_agent=user_agent,
+#                     username=username,
+#                     password=password)
+#	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	db = get_db()
 	for post in test:
 		link = 'https://www.reddit.com' + post.permalink
