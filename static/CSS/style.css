@@ -356,6 +356,7 @@ h1 {
 
 #content-wrap {
   padding-bottom: 2.5rem;    /* Footer height */
+  background: #cecece;
 }
 
 body{
@@ -405,7 +406,6 @@ a:visited {
   width: 100%;
   min-height: 100vh;
   background: #cecece;
-
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -533,7 +533,8 @@ a:visited {
 }
 
 .row:hover {
-  background-color: #ececff;
+  /*background-color: #ececff;*/
+  background-color: #ededed;
   cursor: pointer;
 }
 
@@ -567,4 +568,20 @@ a:visited {
   .table, .row, .cell {
     width: 100% !important;
   }
+}
+
+.pagination-page-info {
+    padding: .6em;
+    padding-left: 0;
+    width: 40em;
+    margin: .5em;
+    margin-left: 0;
+    font-size: 12px;
+}
+.pagination-page-info b {
+    color: black;
+    background: #6aa6ed;
+    padding-left: 2px;
+    padding: .1em .25em;
+    font-size: 150%;
 }

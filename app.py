@@ -6,6 +6,8 @@ import sqlite3
 import collections
 from config import *
 from flask_bootstrap import Bootstrap
+from flask import Flask, render_template
+from flask_paginate import Pagination, get_page_args
 #from flask_wtf import FlaskForm
 #from wtforms import StringField, PasswordField, BooleanField, SubmitField
 #from wtforms.validators import DataRequired
@@ -15,7 +17,16 @@ pp = pprint.PrettyPrinter(indent=4)
 if __name__ == '__main__':
 	app.run(debug=True)
 
+users = list(range(100))
+
 app = Flask(__name__)
+
+def get_users(offset=0, per_page=10):
+    return users[offset: offset + per_page]
+
+
+def get_results(offset=0, per_page=10):
+    return results[offset: offset + per_page]
 
 
 bootstrap = Bootstrap(app)
@@ -99,6 +110,13 @@ def close_db(error):
 		g.sqlite_db.close()		
 
 
+@app.route('/test2', methods=['GET', 'POST'])
+def test2():
+	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+	total = len(users)
+	pagination_users = get_users(offset=offset, per_page=per_page)
+	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+	return render_template('test2.html', users=pagination_users, page=page, per_page=per_page, pagination=pagination,)
 
 
 @app.route('/updateTable', methods=['GET', 'POST'])
@@ -115,9 +133,7 @@ def updateTable():
 				catx = str(x) + 'cat'
 				results = posts_all()
 				cat = request.form.get(catx)
-				print(cat)
 				post_title = post['title']
-				print(post_title)
 				x = x + 1
 				if cat != post['category']:
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
@@ -250,11 +266,28 @@ def droptable():
 
 @app.route('/viewresults', methods=['GET', 'POST'])
 def viewresults():
+	env = jinja2.Environment()
+	env.globals.update(zip=zip)
 	db = get_db()
 	cur = db.execute('select id, title, link, category from posts')
 	results = cur.fetchall()
+	#need to make master list with the 3 things about posts
+	smlist = []
+	masterlist = []
+	i=0
+	for x in results:
+		smlist.insert(i, x['title'])
+		smlist.insert(i, x['link'])
+		smlist.insert(i, x['category'])
+		masterlist.append(smlist)
+		i=i+1
+	print(masterlist[0])
 	print('Table exists.')
-	return render_template("viewresults.html", results=results)
+	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+	total = len(results)
+	pagination_results = get_results(offset=offset, per_page=per_page)
+	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+	return render_template("viewresults.html", zip=zip, results=results, test=pagination_results, page=page, per_page=per_page, pagination=pagination)
 
 
 @app.route('/devArea')

@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+
+</head>
+
+<div id='cssmenu'>
+<ul>
+   <li> <a href="http://127.0.0.1:5000/"><span>Home</span></a></li>
+   <li class='active has-sub'><a href='#'><span>Sort Posts</span></a>
+      <ul>
+         <li class='has-sub'><a href='{{url_for("sortbyfood")}}'><span>Food</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortbygaming")}}'><span>Gaming</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortbyfunny")}}'><span>Funny</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortbyprogramming")}}'><span>Programming</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortbysecurity")}}'><span>Security</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortbyraspberrypi")}}'><span>Raspberry Pi</span></a></li>        
+         <li class='has-sub'><a href='{{url_for("sortbyconsolehacking")}}'><span>Console Hacking</span></a></li>
+      </ul>
+   </li>
+   <li class='active has-sub'><a href='#'><span>Update</span></a>
+      <ul>
+         <li class='has-sub'><a href='{{url_for("updateTableUnsorted")}}'><span>Unsorted</span></a></li>
+         <li class='has-sub'><a href='{{url_for("updateTable")}}'><span>All Posts</span></a></li>
+      </ul>
+    </li>
+   <li><a href='{{url_for("viewresults")}}'><span>View All</span></a></li>
+   <li> <a href="{{url_for('devArea')}}"><span>Dev Area</span></a></li>
+</ul>
+</div>
+<body>
+<div id="page-container">
+<div id="content-wrap">

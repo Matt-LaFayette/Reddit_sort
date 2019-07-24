@@ -1,6 +1,7 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 </head>
 {% extends "navtest.html" %}
 <body>
@@ -8,26 +9,32 @@
 
 </br>
 
+
 <div class="limiter">
+
 		<div class="container-table100">
+
 			<div class="wrap-table100">
 					<div class="table">
-
+						{{ pagination.links }}
 						<div class="row header">
 							<div id="1" class="cell">Number</div>
 							<div class="cell">Post</div>
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
 						</div>
-						{% for post in results %}
+						{% for post,y in zip(results, test) %}
 						<div class="row">
-							<div class="cell" data-title="Number">{{loop.index}}</div>
+							<div class="cell" data-title="Number">{{loop.index + (page - 1) * per_page}}</div>
 							<div class="cell" data-title="Post">{{post['title']}}</div>
 							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{post['category']}}</div>
+							<input type="hidden" value="{{y}}">
 						</div>
 						{% endfor %}
 				</div>
+				{{ pagination.links }}
+			
 </div>
 
 <!--
