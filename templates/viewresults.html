@@ -3,64 +3,43 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 </head>
-{% extends "navtest.html" %}
 <body>
-{% block content %}
-
 </br>
-
-
 <div class="limiter">
-
 		<div class="container-table100">
-
 			<div class="wrap-table100">
 					<div class="table">
-						{{ pagination.links }}
 						<div class="row header">
 							<div id="1" class="cell">Number</div>
 							<div class="cell">Post</div>
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
 						</div>
-							
-						{% for post,x in zip(masterlist, test) %}
-						{% set count = loop.index %}
+						{% for t,i in zip(t3.items, range(14, 0, -1)) %}
 						<div class="row">
-							<div class="cell" data-title="Number">{{count + (page - 1) * per_page}}</div>
-							<div class="cell" data-title="Post">{{post[0]}}<input type="hidden" value={{x}}></div>
-							<div class="cell" data-title="Link"><a href="{{post}}" target='_blank'>Link</a></div>
-							<div class="cell" data-title="Category">{{post}}</div>
-							
+							<div class="cell" data-title="Number">
+								{{(t3.page * 15)-i}}
+							</div>
+							<div class="cell" data-title="Post">{{t.title}}</div>
+							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
+							<div class="cell" data-title="Category">{{t.category}}</div>
 						</div>
-						
 						{% endfor %}
-						<!--<div class="row">
-							<div class="cell">{{"".join(masterlist[0][0:])}}</div>-->
-				</div>
-				{{ pagination.links }}
-			
-</div>
+						<nav aria-label="Page navigation example">
+							<ul class="pagination">
 
-<!--
-<table class="blueTable">
-	<tr>
-		<th>ID</th>
-		<th>Post</th>
-		<th>Link</th>
-		<th>Category</th>
-	</tr>
-	{% for post in results %}
-	<tr>
-		<td>{{loop.index}}</td>
-		<td>{{post['title']}}</td>
-		<td><a href="{{post['link']}} target="_blank"">Link</a></td>
-		<td>{{post['category']}}</td>
-	</tr>
-{% endfor %}
-</table>	
-{% endblock %}	
--->
+								{% for page in t3.iter_pages(left_edge=3) %}
+									{% if page %}
+									
+										<li class="page-item"><a class="page-link" href="{{ url_for('viewresults', page_num=page) }}">{{ page }}</a>
+									{% else %}
+										...
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</nav>
+					</div>
+			</div>
 </br>
 </body>	
 </html>

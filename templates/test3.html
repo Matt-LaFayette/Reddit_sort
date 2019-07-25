@@ -13,14 +13,19 @@
 			</div>
 
 		{% endfor %}
+		<nav aria-label="Page navigation example">
+		<ul class="pagination">
+		
 			{% for page in t3.iter_pages(left_edge=3) %}
 		{% if page %}
-			<a href="{{ url_for('test3', page_num=page) }}">{{ page }}</a>
+			<li class="page-item"><a class="page-link" href="{{ url_for('test3', page_num=page) }}">{{ page }}</a>
 		{% else %}
 			...
 		{% endif %}
-
+			
 	{% endfor %}
+	</ul>
+			</nav>
 </div>
 	</body>
 

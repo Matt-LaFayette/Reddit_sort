@@ -18,7 +18,7 @@ from flask_sqlalchemy import SQLAlchemy
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Matty Ice\\Desktop\\Projects\\Python\\Flask\\Reddit_sort\\data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db'
 db = SQLAlchemy(app)
 
 class posts(db.Model):
@@ -102,7 +102,7 @@ def posts_unsorted():
 	return results2
 
 def connect_db():
-	sql = sqlite3.connect('C:\\Users\\Matty Ice\\Desktop\\Projects\\Python\\Flask\\Reddit_sort\\data.db')
+	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
 	sql.row_factory = sqlite3.Row
 	return sql
 
@@ -124,10 +124,7 @@ def close_db(error):
 		g.sqlite_db.close()		
 
 
-@app.route('/test3/<int:page_num>', methods=['GET', 'POST'])
-def test3(page_num):
-	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
-	return render_template('test3.html', t3=t3)
+
 
 @app.route('/test2', methods=['GET', 'POST'])
 def test2():
@@ -281,32 +278,24 @@ def droptable():
 	db.commit()
 	return "table dropped<br/><button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
-@app.route('/viewresults', methods=['GET', 'POST'])
-def viewresults():
+@app.route('/viewresults/<int:page_num>', methods=['GET', 'POST'])
+def viewresults(page_num):
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
-	db = get_db()
-	cur = db.execute('select id, title, link, category from posts')
-	results = cur.fetchall()
-	#need to make master list with the 3 things about posts
-	smlist = []
-	masterlist = []
-	i=0
-	for x in results:
-		smlist.insert(i, x['title'])
-		smlist.insert(i + 1, x['link'])
-		smlist.insert(i + 2, x['category'])
-		masterlist.append(smlist[:])
-		#print(str(smlist) + "\n")
-		smlist = []
-	tt = posts().title
-	print (tt)
-	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-	total = len(masterlist)
-	pagination_results = get_results(offset=offset, per_page=per_page)
-	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
-	return render_template("viewresults.html", zip=zip, masterlist=masterlist, results=results, test=pagination_results, page=page, per_page=per_page, pagination=pagination)
+	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
+	t4 = posts.query.all()
+	mydict = {}
+	x=1
+	for t in t4:
+		mydict[t.title]=x
+		x=x+1
+	print (mydict)
+	return render_template('viewresults.html', zip=zip, mydict=mydict, t3=t3)
 
+@app.route('/test3/<int:page_num>', methods=['GET', 'POST'])
+def test3(page_num):
+	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
+	return render_template('test3.html', t3=t3)
 
 @app.route('/devArea')
 def devArea():
