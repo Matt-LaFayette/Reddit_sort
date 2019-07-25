@@ -11,15 +11,29 @@ from flask_paginate import Pagination, get_page_args
 #from flask_wtf import FlaskForm
 #from wtforms import StringField, PasswordField, BooleanField, SubmitField
 #from wtforms.validators import DataRequired
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 
 pp = pprint.PrettyPrinter(indent=4)
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Matty Ice\\Desktop\\Projects\\Python\\Flask\\Reddit_sort\\data.db'
+db = SQLAlchemy(app)
+
+class posts(db.Model):
+    id = db.Column(db.String, primary_key=True)
+    title = db.Column(db.String(80), unique=True, nullable=False)
+    link = db.Column(db.String(120), unique=True, nullable=False)
+    category = db.Column(db.String(120), unique=True, nullable=False)
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
 
 users = list(range(100))
 
-app = Flask(__name__)
+
 
 def get_users(offset=0, per_page=10):
     return users[offset: offset + per_page]
@@ -88,7 +102,7 @@ def posts_unsorted():
 	return results2
 
 def connect_db():
-	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
+	sql = sqlite3.connect('C:\\Users\\Matty Ice\\Desktop\\Projects\\Python\\Flask\\Reddit_sort\\data.db')
 	sql.row_factory = sqlite3.Row
 	return sql
 
@@ -117,6 +131,8 @@ def test2():
 	pagination_users = get_users(offset=offset, per_page=per_page)
 	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
 	return render_template('test2.html', users=pagination_users, page=page, per_page=per_page, pagination=pagination,)
+
+
 
 
 @app.route('/updateTable', methods=['GET', 'POST'])
@@ -245,10 +261,6 @@ def index():
 	return render_template('index.html', bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
-@app.route('/birthdays')
-def birthdays():
-	return render_template("birthdays.html", test=test)
-
 @app.route('/createtable')
 def createtable():
 	db = get_db()
@@ -277,17 +289,18 @@ def viewresults():
 	i=0
 	for x in results:
 		smlist.insert(i, x['title'])
-		smlist.insert(i, x['link'])
-		smlist.insert(i, x['category'])
-		masterlist.append(smlist)
-		i=i+1
-	print(masterlist[0])
-	print('Table exists.')
+		smlist.insert(i + 1, x['link'])
+		smlist.insert(i + 2, x['category'])
+		masterlist.append(smlist[:])
+		#print(str(smlist) + "\n")
+		smlist = []
+	tt = posts().title
+	print (tt)
 	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-	total = len(results)
+	total = len(masterlist)
 	pagination_results = get_results(offset=offset, per_page=per_page)
 	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
-	return render_template("viewresults.html", zip=zip, results=results, test=pagination_results, page=page, per_page=per_page, pagination=pagination)
+	return render_template("viewresults.html", zip=zip, masterlist=masterlist, results=results, test=pagination_results, page=page, per_page=per_page, pagination=pagination)
 
 
 @app.route('/devArea')
