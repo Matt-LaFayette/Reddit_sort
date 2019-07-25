@@ -124,6 +124,11 @@ def close_db(error):
 		g.sqlite_db.close()		
 
 
+@app.route('/test3/<int:page_num>', methods=['GET', 'POST'])
+def test3(page_num):
+	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
+	return render_template('test3.html', t3=t3)
+
 @app.route('/test2', methods=['GET', 'POST'])
 def test2():
 	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
