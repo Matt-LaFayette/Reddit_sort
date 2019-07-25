@@ -1,9 +1,11 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
+{% extends 'navtest.html' %}
 <body>
+{% block content %}
 </br>
 <div class="limiter">
 		<div class="container-table100">
@@ -25,21 +27,23 @@
 							<div class="cell" data-title="Category">{{t.category}}</div>
 						</div>
 						{% endfor %}
+											</div>
+			
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
 
-								{% for page in t3.iter_pages(left_edge=3) %}
+								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
 									{% if page %}
-									
+
 										<li class="page-item"><a class="page-link" href="{{ url_for('viewresults', page_num=page) }}">{{ page }}</a>
 									{% else %}
-										...
+										<li class="page-item"><a class="page-link" href="#">...</a>
 									{% endif %}
 								{% endfor %}
 							</ul>
 						</nav>
-					</div>
-			</div>
+</div>
 </br>
+{% endblock %}
 </body>	
 </html>
