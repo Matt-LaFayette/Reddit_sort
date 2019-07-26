@@ -31,8 +31,9 @@ class posts(db.Model):
 if __name__ == '__main__':
 	app.run(debug=True)
 
-users = list(range(100))
 
+env = jinja2.Environment()
+env.globals.update(zip=zip)
 
 
 def get_users(offset=0, per_page=10):
@@ -187,11 +188,6 @@ def updateTableUnsorted():
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
-#	reddit = praw.Reddit(client_id=client_id,
-#                     client_secret=client_secret,
-#                     user_agent=user_agent,
-#                     username=username,
-#                     password=password)
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	db = get_db()
 	for post in test:
@@ -205,7 +201,7 @@ def addRedditInfo():
 	return '''stuff added<br/>
 	<button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>
 	</br>
-	<button type='button'><a href='http://127.0.0.1:5000/viewresults'>View Results</a></button>
+	<button type='button'><a href='url_for('viewresults') page_num=1'>View Results</a></button>
 	
 	'''
 
@@ -244,22 +240,7 @@ def index():
 		for x in range (0,len(img)):
 			if i.display_name == img[x]:
 				bkgrnd.append(i.banner_background_image)
-#	results = []
-	#for p in bkgrnd:
-	#	print(p)
 
-#	for post in test:
-#		results.append(post.subreddit.display_name)
-
-#	counter = collections.Counter(results).most_common(10)
-
-#	name_list = []
-#	value_list = []
-
-#	for x,y in counter:
-#		name_list.append(x)
-#		value_list.append(y)
-		
 	return render_template('index.html', bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
@@ -282,37 +263,23 @@ def droptable():
 def viewresults(page_num):
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
-	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
-	t4 = posts.query.all()
-	mydict = {}
-	x=1
-	for t in t4:
-		mydict[t.title]=x
-		x=x+1
-	print (mydict)
-	return render_template('viewresults.html', zip=zip, mydict=mydict, t3=t3)
-
-@app.route('/test3/<int:page_num>', methods=['GET', 'POST'])
-def test3(page_num):
-	t3 = posts.query.paginate(per_page=15, page=page_num, error_out=True)
-	return render_template('test3.html', t3=t3)
+	t3 = posts.query.paginate(per_page=16, page=page_num, error_out=True)
+	return render_template('viewresults.html', zip=zip, t3=t3)
 
 @app.route('/devArea')
 def devArea():
 	return render_template("devArea.html")
 
 
-@app.route('/sortbyfood', methods=['GET', 'POST'])
-def sortbyfood():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Food"')
-	results = cur.fetchall()
-	return render_template("sortbyfood.html", results=results)
+@app.route('/sortbyfood/<int:page_num>', methods=['GET', 'POST'])
+def sortbyfood(page_num):
+	t3 = posts.query.filter_by(category="Food").paginate(per_page=16, page=page_num, error_out=True)
+	return render_template("sortbyfood.html", zip=zip, t3=t3)
 
 @app.route('/sortbyraspberrypi', methods=['GET', 'POST'])
 def sortbyraspberrypi():
 	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Food"')
+	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "raspberrypi"')
 	results = cur.fetchall()
 	return render_template("sortbyraspberrypi.html", results=results)
 	
@@ -324,12 +291,10 @@ def sortbysecurity():
 	results = cur.fetchall()
 	return render_template("sortbysecurity.html", results=results)
 
-@app.route('/sortbygaming', methods=['GET', 'POST'])
-def sortbygaming():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Gaming"')
-	results = cur.fetchall()
-	return render_template("sortbygaming.html", results=results)
+@app.route('/sortbygaming/<int:page_num>', methods=['GET', 'POST'])
+def sortbygaming(page_num):
+	t3 = posts.query.filter_by(category="Gaming").paginate(per_page=16, page=page_num, error_out=True)
+	return render_template("sortbygaming.html", zip=zip, t3=t3)
 
 @app.route('/sortbyfunny', methods=['GET', 'POST'])
 def sortbyfunny():

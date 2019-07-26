@@ -15,22 +15,38 @@
 		<div class="container-table100">
 			<div class="wrap-table100">
 					<div class="table">
-
 						<div class="row header">
 							<div id="1" class="cell">Number</div>
 							<div class="cell">Post</div>
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
 						</div>
-						{% for post in results %}
+						{% for t,i in zip(t3.items, range(15, 0, -1)) %}
 						<div class="row">
-							<div class="cell" data-title="Number">{{loop.index}}</div>
-							<div class="cell" data-title="Post">{{post['title']}}</div>
-							<div class="cell" data-title="Link"><a href="{{post['link']}}" target='_blank'>Link</a></div>
-							<div class="cell" data-title="Category">{{post['category']}}</div>
+							<div class="cell" data-title="Number">
+								{% if t3.page == 1 %}
+								{{(t3.page * 16)-i}}
+								{% else %}
+								{{(t3.page * 15)-(i-1)}}
+								{% endif %}
+							</div>
+							<div class="cell" data-title="Post">{{t.title}}</div>
+							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
+							<div class="cell" data-title="Category">{{t.category}}</div>
 						</div>
 						{% endfor %}
 				</div>
+						<nav aria-label="Page navigation example">
+							<ul class="pagination">
+								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
+									{% if page %}
+										<li class="page-item"><a class="page-link" href="{{url_for('sortbygaming', page_num=page)}}">{{ page }}</a>
+									{% else %}
+										<li class="page-item"><a class="page-link" href="#">...</a>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</nav>
 </div>
 	{% endblock %}
 
