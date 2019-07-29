@@ -219,8 +219,8 @@ def index():
 		sub_list.append(x.display_name)
 
 	bkgrnd = []
-
 	imgkv = {}
+	altimgkv = {}
 
 	for i in subscribed:
 		for x in range (0,len(img)):
@@ -228,10 +228,12 @@ def index():
 			if img[x] == i.display_name:
 				bkgrnd.append(str(i.banner_background_image))
 				imgkv[i.display_name] = i.banner_background_image
+				altimgkv[i.display_name] = i.community_icon
 				
-	print(imgkv)
+	for r in subscribed:
+		print (str(r.display_name) + " " + str(r.primary_color))
 
-	return render_template('index.html', imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
+	return render_template('index.html', altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/createtable')
