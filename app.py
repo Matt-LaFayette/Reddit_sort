@@ -220,11 +220,18 @@ def index():
 
 	bkgrnd = []
 
+	imgkv = {}
+
 	for i in subscribed:
 		for x in range (0,len(img)):
-			if i.display_name == img[x]:
-				bkgrnd.append(i.banner_background_image)
-	return render_template('index.html', bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
+			#print (i.display_name + " : " + img[x])
+			if img[x] == i.display_name:
+				bkgrnd.append(str(i.banner_background_image))
+				imgkv[i.display_name] = i.banner_background_image
+				
+	print(imgkv)
+
+	return render_template('index.html', imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/createtable')
