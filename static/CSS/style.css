@@ -399,13 +399,14 @@ a:visited {
 
 .limiter {
   width: 100%;
+  background: #cecece;
   margin: 0 auto;
 }
 
 .container-table100 {
   width: 100%;
   min-height: 100vh;
-  background: #cecece;
+
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;

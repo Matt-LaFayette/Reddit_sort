@@ -1,0 +1,31 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+</head>
+
+<div id='cssmenu'>
+<ul>
+   <li> <a href="http://127.0.0.1:5000/"><span>Home</span></a></li>
+   <li class='active has-sub'><a href='#'><span>Sort Posts</span></a>
+      <ul>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Food" )}}'><span>Food</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Gaming" )}}'><span>Gaming</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Funny" )}}'><span>Funny</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Programming" )}}'><span>Programming</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Security" )}}'><span>Security</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Raspberry Pi" )}}'><span>Raspberry Pi</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat="Console Hacking" )}}'><span>Console Hacking</span></a></li>
+      </ul>
+   </li>
+   <li class='active has-sub'><a href='#'><span>Update</span></a>
+      <ul>
+         <li class='has-sub'><a href='{{url_for("updateTableUnsorted")}}'><span>Unsorted</span></a></li>
+         <li class='has-sub'><a href='{{url_for("updateTable")}}'><span>All Posts</span></a></li>
+      </ul>
+    </li>
+   <li><a href='{{url_for("viewresults", page_num=1)}}'><span>View All</span></a></li>
+   <li> <a href="{{url_for('devArea')}}"><span>Dev Area</span></a></li>
+</ul>
+</div>
+<body>

@@ -4,13 +4,14 @@
 	<title>Sort by</title>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
-{% extends "navtest.html" %}
-<body>
-	{% block content %}
-</br>
-<h1>Posts related to Food</h1>
+{% include "topnav.html" %}
 <div class="limiter">
-		<div class="container-table100">
+   
+<body>
+	
+</br>
+<h1>Posts related to {{sort_cat}}</h1>
+	<div class="container-table100">
 			<div class="wrap-table100">
 					<div class="table">
 						<div class="row header">
@@ -36,9 +37,10 @@
 				</div>
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
+
 								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
 									{% if page %}
-										<li class="page-item"><a class="page-link" href="{{url_for('sortbyfood', page_num=page)}}">{{ page }}</a>
+										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=page, sort_cat=sort_cat )}}">{{ page }}</a>
 									{% else %}
 										<li class="page-item"><a class="page-link" href="#">...</a>
 									{% endif %}
@@ -48,7 +50,7 @@
 
 			</div>
 
-	{% endblock %}
+	
 
 
 </body>

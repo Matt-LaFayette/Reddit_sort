@@ -1,15 +1,15 @@
 <html>
-{% include "bootstrap/base.html" %}
+
 <head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
 <body>
-{% extends "navtest.html" %}
+{% include "topnav.html" %}
+<div class="limiter">
 
-{% block content %}
 <br>
 <h1>All Unsorted Posts</h1>
-<div class="limiter">
+
 		<div class="container-table100">
 			<div class="wrap-table100">
 					<div class="table">
@@ -50,7 +50,7 @@
 
 </br>
 </br>
-{% endblock %}
+
 
 </body>
 </html>

@@ -27,14 +27,11 @@ class posts(db.Model):
     link = db.Column(db.String(120), unique=True, nullable=False)
     category = db.Column(db.String(120), unique=True, nullable=False)
 
-
 if __name__ == '__main__':
 	app.run(debug=True)
 
-
 env = jinja2.Environment()
 env.globals.update(zip=zip)
-
 
 def get_users(offset=0, per_page=10):
     return users[offset: offset + per_page]
@@ -123,19 +120,6 @@ def trim_title(title):
 def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
-
-
-
-
-@app.route('/test2', methods=['GET', 'POST'])
-def test2():
-	page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-	total = len(users)
-	pagination_users = get_users(offset=offset, per_page=per_page)
-	pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
-	return render_template('test2.html', users=pagination_users, page=page, per_page=per_page, pagination=pagination,)
-
-
 
 
 @app.route('/updateTable', methods=['GET', 'POST'])
@@ -240,7 +224,6 @@ def index():
 		for x in range (0,len(img)):
 			if i.display_name == img[x]:
 				bkgrnd.append(i.banner_background_image)
-
 	return render_template('index.html', bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
@@ -270,52 +253,12 @@ def viewresults(page_num):
 def devArea():
 	return render_template("devArea.html")
 
-
-@app.route('/sortbyfood/<int:page_num>', methods=['GET', 'POST'])
-def sortbyfood(page_num):
-	t3 = posts.query.filter_by(category="Food").paginate(per_page=16, page=page_num, error_out=True)
-	return render_template("sortbyfood.html", zip=zip, t3=t3)
-
-@app.route('/sortbyraspberrypi', methods=['GET', 'POST'])
-def sortbyraspberrypi():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "raspberrypi"')
-	results = cur.fetchall()
-	return render_template("sortbyraspberrypi.html", results=results)
-	
-
-@app.route('/sortbysecurity', methods=['GET', 'POST'])
-def sortbysecurity():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Security"')
-	results = cur.fetchall()
-	return render_template("sortbysecurity.html", results=results)
-
-@app.route('/sortbygaming/<int:page_num>', methods=['GET', 'POST'])
-def sortbygaming(page_num):
-	t3 = posts.query.filter_by(category="Gaming").paginate(per_page=16, page=page_num, error_out=True)
-	return render_template("sortbygaming.html", zip=zip, t3=t3)
-
-@app.route('/sortbyfunny', methods=['GET', 'POST'])
-def sortbyfunny():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Funny"')
-	results = cur.fetchall()
-	return render_template("sortbyfunny.html", results=results)
-
-@app.route('/sortbyprogramming', methods=['GET', 'POST'])
-def sortbyprogramming():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Programming"')
-	results = cur.fetchall()
-	return render_template("sortbyprogramming.html", results=results)
-
-@app.route('/sortbyconsolehacking', methods=['GET', 'POST'])
-def sortbyconsolehacking():
-	db = get_db()
-	cur = db.execute('SELECT id, title, link, category FROM posts WHERE category = "Console Hacking"')
-	results = cur.fetchall()
-	return render_template("sortbyconsolehacking.html", results=results)
+@app.route('/sortby/<int:page_num>', methods=['GET', 'POST'])
+def sortby(page_num):
+	sort_cat = request.args.get('sort_cat', None)
+	print(sort_cat)
+	t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=16, page=page_num, error_out=True)
+	return render_template("sortby.html", zip=zip, t3=t3, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
 def deleteposts():
@@ -338,7 +281,6 @@ def deleteposts():
 				db.commit()
 		return redirect(url_for('deleteposts'))
 	return render_template("deleteposts.html", results=results)
-
 
 @app.route('/unfavpost', methods=['GET', 'POST'])
 def unfavpost():
