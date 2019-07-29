@@ -3,10 +3,9 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
-{% extends 'navtest.html' %}
+{% include 'topnav.html' %}
 <body>
-{% block content %}
-</br>
+
 <div class="limiter">
 		<div class="container-table100">
 			<div class="wrap-table100">
@@ -46,6 +45,6 @@
 						</nav>
 </div>
 </br>
-{% endblock %}
+
 </body>	
 </html>

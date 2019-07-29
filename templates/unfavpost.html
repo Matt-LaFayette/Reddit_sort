@@ -3,9 +3,9 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 </head>
 <body>
-{% extends "navtest.html" %}
+{% include "topnav.html" %}
 
-{% block content %}
+
 </br>
 <h1>DELETE POSTS</h1>
 <button type="button"><a href="{{url_for('unfavunsort')}}">View Unsorted</a></button>
@@ -39,7 +39,7 @@
 	
 </br>
 </br>
-{% endblock %}
+
 </body>
 
 </html>
