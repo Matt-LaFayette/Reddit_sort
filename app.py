@@ -90,6 +90,47 @@ for b in name_list:
 categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
 
 
+# from index.html not sure if it makes it faster or slower
+
+reddit = praw.Reddit(client_id=client_id,
+                 client_secret=client_secret,
+                 user_agent=user_agent,
+                 username=username,
+                 password=password)
+test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+subscribed = list(reddit.user.subreddits(limit=None))
+
+sub_list = []
+img = []
+results = []
+
+for post in test:
+	results.append(post.subreddit.display_name)
+
+counter = collections.Counter(results).most_common(10)
+
+for x in counter:
+	img.append(x[0])
+
+for x in subscribed:
+	sub_list.append(x.display_name)
+
+bkgrnd = []
+imgkv = {}
+altimgkv = {}
+
+for i in subscribed:
+	for x in range (0,len(img)):
+		#print (i.display_name + " : " + img[x])
+		if img[x] == i.display_name:
+			bkgrnd.append(str(i.banner_background_image))
+			imgkv[i.display_name] = i.banner_background_image
+			altimgkv[i.display_name] = i.community_icon
+
+
+# end
+
+
 @app.context_processor
 def inject_user():
     return dict(category=categories)
@@ -205,45 +246,6 @@ def index():
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
 	env.globals.update(str=str)
-
-	reddit = praw.Reddit(client_id=client_id,
-                     client_secret=client_secret,
-                     user_agent=user_agent,
-                     username=username,
-                     password=password)
-	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
-	subscribed = list(reddit.user.subreddits(limit=None))
-
-	sub_list = []
-	img = []
-	results = []
-
-	for post in test:
-		results.append(post.subreddit.display_name)
-
-	counter = collections.Counter(results).most_common(10)
-
-	for x in counter:
-		img.append(x[0])
-
-	for x in subscribed:
-		sub_list.append(x.display_name)
-
-	bkgrnd = []
-	imgkv = {}
-	altimgkv = {}
-
-	for i in subscribed:
-		for x in range (0,len(img)):
-			#print (i.display_name + " : " + img[x])
-			if img[x] == i.display_name:
-				bkgrnd.append(str(i.banner_background_image))
-				imgkv[i.display_name] = i.banner_background_image
-				altimgkv[i.display_name] = i.community_icon
-				
-	for r in subscribed:
-		print (str(r.display_name) + " " + str(r.primary_color))
-
 	return render_template('index.html', altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 

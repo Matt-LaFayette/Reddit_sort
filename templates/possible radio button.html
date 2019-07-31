@@ -1,0 +1,24 @@
+<!--
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+  $(":radio[name='quotation_request[payment_option]']").change(function() {
+    if (this.value == 'lease') {
+      console.log("lease");
+    } else if (this.value == 'finance') {
+      console.log("finance");
+      $(".table").load(location.href + " .table");
+    }
+  });
+});
+</script>
+
+<input id="quotation_request_payment_option_lease" class="choose_payment_option" name="quotation_request[payment_option]" type="radio" value="lease" checked="checked"/>
+<input id="quotation_request_payment_option_finance" class="choose_payment_option" name="quotation_request[payment_option]" type="radio" value="finance" />
+{% if request.form.get('quotation_request[payment_option]') == finance %}
+{% set t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=30, page=1, error_out=True) %}
+{% else %}
+{% set t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=16, page=1, error_out=True) %}
+{% endif %}	-->
