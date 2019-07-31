@@ -87,6 +87,13 @@ for b in name_list:
 #needs the .encode or else errors
 	#return '{}'.format(array)
 
+categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
+
+
+@app.context_processor
+def inject_user():
+    return dict(category=categories)
+
 def posts_all():
 	db = get_db()
 	cur = db.execute('select id, title, link, category from posts')
@@ -121,11 +128,15 @@ def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
+@app.route('/topnav', methods=['GET', 'POST'])
+def topnav():
+	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
+	return render_template('topnav.html')
 
 @app.route('/updateTable', methods=['GET', 'POST'])
 def updateTable():
 	db = get_db()
-	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
+	#categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
 	results = posts_all()
 	if request.method == 'POST':
 		x = 1
@@ -147,7 +158,7 @@ def updateTable():
 @app.route('/updateTableUnsorted', methods=['GET', 'POST'])
 def updateTableUnsorted():
 	db = get_db()
-	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
+	
 	results2 = posts_unsorted()
 	if request.method == 'POST':
 		x = 1

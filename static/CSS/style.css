@@ -397,6 +397,13 @@ a:visited {
 
 /* TABLE STUFF */
 
+.container:before,
+.container:after,
+ {
+  display: table;
+  content: none;
+}
+
 .limiter {
   width: 100%;
   background: #cecece;
@@ -529,6 +536,13 @@ a:visited {
   text-align: center;
 }
 
+.row:before {
+  content: none;
+}
+
+.row:after {
+  content: none;
+}
 
 .table, .row {
   width: 100% !important;
