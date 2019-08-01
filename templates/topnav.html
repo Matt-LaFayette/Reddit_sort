@@ -10,7 +10,7 @@
    <li class='active has-sub'><a href='#'><span>Sort Posts</span></a>
       <ul>
          {% for x in category %}
-         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, sort_cat=x )}}'><span>{{x}}</span></a></li>
+         <li class='has-sub'><a href='{{url_for("sortby", page_num=1, per_page_res=15, sort_cat=x )}}'><span>{{x}}</span></a></li>
          {% endfor %}
       </ul>
    </li>
@@ -20,7 +20,7 @@
          <li class='has-sub'><a href='{{url_for("updateTable")}}'><span>All Posts</span></a></li>
       </ul>
     </li>
-   <li><a href='{{url_for("viewresults", page_num=1)}}'><span>View All</span></a></li>
+   <li><a href='{{url_for("viewresults", page_num=1, per_page_res=15)}}'><span>View All</span></a></li>
    <li> <a href="{{url_for('devArea')}}"><span>Dev Area</span></a></li>
 </ul>
 </div>

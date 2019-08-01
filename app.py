@@ -130,6 +130,13 @@ for i in subscribed:
 
 # end
 
+@app.context_processor
+def utility_functions():
+    def print_in_console(message):
+        print (str(message))
+
+    return dict(mdebug=print_in_console)
+
 
 @app.context_processor
 def inject_user():
@@ -264,23 +271,24 @@ def droptable():
 	db.commit()
 	return "table dropped<br/><button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
-@app.route('/viewresults/<int:page_num>', methods=['GET', 'POST'])
-def viewresults(page_num):
+@app.route('/viewresults/<int:page_num>/<int:per_page_res>', methods=['GET', 'POST'])
+def viewresults(page_num, per_page_res):
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
-	t3 = posts.query.paginate(per_page=16, page=page_num, error_out=True)
+	t3 = posts.query.paginate(per_page=per_page_res, page=page_num, error_out=True)
 	return render_template('viewresults.html', zip=zip, t3=t3)
 
 @app.route('/devArea')
 def devArea():
 	return render_template("devArea.html")
 
-@app.route('/sortby/<int:page_num>', methods=['GET', 'POST'])
-def sortby(page_num):
+@app.route('/sortby/<int:page_num>/<int:per_page_res>', methods=['GET', 'POST'])
+def sortby(page_num, per_page_res):
 	sort_cat = request.args.get('sort_cat', None)
 	print(sort_cat)
-	t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=16, page=page_num, error_out=True)
-	return render_template("sortby.html", zip=zip, t3=t3, sort_cat=sort_cat)
+	per_page = per_page_res
+	t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=per_page_res, page=page_num, error_out=True)
+	return render_template("sortby.html", t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
 def deleteposts():

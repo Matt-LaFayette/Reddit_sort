@@ -9,10 +9,14 @@
    
 <body>
 
+
+
 </br>
 <h1>Posts related to {{sort_cat}}</h1>
 	<div class="container-table100">
 			<div class="wrap-table100">
+				<button type="button" class="btn btn-primary"><a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, sort_cat=sort_cat )}}">15</a></button>
+				<button type="button" class="btn btn-primary"><a href="{{url_for('sortby', page_num=t3.page, per_page_res=30, sort_cat=sort_cat )}}">30</a></button>
 					<div class="table">
 						<div class="row header">
 							<div id="1" class="cell">Number</div>
@@ -20,13 +24,13 @@
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
 						</div>
-						{% for t,i in zip(t3.items, range(15, 0, -1)) %}
+						{% for t,i in zip(t3.items, range(per_page, 0, -1)) %}
 						<div class="row">
 							<div class="cell" data-title="Number">
 								{% if t3.page == 1 %}
-								{{(t3.page * 16)-i}}
+								{{(t3.page * (per_page+1))-i}}
 								{% else %}
-								{{(t3.page * 15)-(i-1)}}
+								{{(t3.page * (per_page))-(i-1)}}
 								{% endif %}
 							</div>
 							<div class="cell" data-title="Post">{{t.title}}</div>
@@ -36,22 +40,16 @@
 						{% endfor %}
 				</div>
 						<nav aria-label="Page navigation example">
-							<ul class="pagination">
-
+							<ul class="pagination" style="margin:1px">
 								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
 									{% if page %}
-										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=page, sort_cat=sort_cat )}}">{{ page }}</a>
+										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=page, per_page_res=per_page, sort_cat=sort_cat )}}">{{ page }}</a>
 									{% else %}
 										<li class="page-item"><a class="page-link" href="#">...</a>
 									{% endif %}
 								{% endfor %}
 							</ul>
 						</nav>
-
 			</div>
-
-	
-
-
 </body>
 </html>
