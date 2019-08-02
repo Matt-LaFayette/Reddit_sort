@@ -9,17 +9,17 @@
    
 <body>
 
-
+<a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, order_by='title', sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">title</button></a>
 
 </br>
 <h1>Posts related to {{sort_cat}}</h1>
 	<div class="container-table100">
 			<div class="wrap-table100">
-				<button type="button" class="btn btn-primary"><a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, sort_cat=sort_cat )}}">15</a></button>
-				<button type="button" class="btn btn-primary"><a href="{{url_for('sortby', page_num=t3.page, per_page_res=30, sort_cat=sort_cat )}}">30</a></button>
+				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">15</button></a>
+				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=30, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">30</button></a>
 					<div class="table">
 						<div class="row header">
-							<div id="1" class="cell">Number</div>
+							<div class="cell">Number</div>
 							<div class="cell">Post</div>
 							<div class="cell">Link</div>
 							<div class="cell">Category</div>
@@ -33,12 +33,11 @@
 								{{(t3.page * (per_page))-(i-1)}}
 								{% endif %}
 							</div>
-							<div class="cell" data-title="Post">{{t.title}}</div>
+							<div class="cell" data-title="Post"><a href="#" data-toggle="modal" data-target="#{{t.id}}">{{t.title}}</div>
 							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{t.category}}</div>
 						</div>
-						{% endfor %}
-				</div>
+								{% endfor %}
 						<nav aria-label="Page navigation example">
 							<ul class="pagination" style="margin:1px">
 								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
@@ -51,5 +50,25 @@
 							</ul>
 						</nav>
 			</div>
+			{% for t in t3.items %}
+			<div class="modal fade" id="{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  							<div class="modal-dialog" id="modal{{t.id}}" role="document">
+    							<div class="modal-content">
+    								<div class="modal-header">
+    									<h3 class="modal-title" id="exampleModalLabel" style="text-align: center; color: #b04c41">{{t.title}}</h3>
+    									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    										<span aria-hidden="true">&times;</span>
+    									</button>
+    								</div>
+    							<div class="modal-body">
+    								{{t.thread_text}}
+								</div>
+      							<div class="modal-footer">
+        							<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    							</div>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
 </body>
 </html>

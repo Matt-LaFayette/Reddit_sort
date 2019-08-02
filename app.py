@@ -26,6 +26,9 @@ class posts(db.Model):
     title = db.Column(db.String(80), unique=True, nullable=False)
     link = db.Column(db.String(120), unique=True, nullable=False)
     category = db.Column(db.String(120), unique=True, nullable=False)
+    date_added = db.Column(db.String(120), unique=False, nullable=False)
+    thread_text = db.Column(db.String(400), unique=True, nullable=False)
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
@@ -237,8 +240,10 @@ def addRedditInfo():
 		link = 'https://www.reddit.com' + post.permalink
 		title = trim_title(post.title)
 		empty = "None"
-		db.execute('insert or ignore into posts (id, title, link, category) values (?, ?, ?, ?)', [str(post), title, link, empty])
-		db.execute('SELECT changes();')
+		date_added = post.created_utc
+		thread_text = post.selftext
+		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text) values (?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text])
+		print(db.execute('SELECT changes();'))
 	db.commit()
 
 	return '''stuff added<br/>
@@ -253,13 +258,16 @@ def index():
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
 	env.globals.update(str=str)
+	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+	for x in test:
+		pp.pprint(vars(x))
 	return render_template('index.html', altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/createtable')
 def createtable():
 	db = get_db()
-	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text)')
+	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text text)')
 	db.commit()
 	return "Table \"Posts\" created<br/><button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
@@ -285,10 +293,13 @@ def devArea():
 @app.route('/sortby/<int:page_num>/<int:per_page_res>', methods=['GET', 'POST'])
 def sortby(page_num, per_page_res):
 	sort_cat = request.args.get('sort_cat', None)
+	order_by = request.args.get('order_by', None)
 	print(sort_cat)
 	per_page = per_page_res
-	t3 = posts.query.filter_by(category=sort_cat).paginate(per_page=per_page_res, page=page_num, error_out=True)
-	return render_template("sortby.html", t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
+	t3 = posts.query.filter_by(category=sort_cat).order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
+	for x in t3.items:
+		print(x.thread_text)
+	return render_template("sortby.html", order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
 def deleteposts():

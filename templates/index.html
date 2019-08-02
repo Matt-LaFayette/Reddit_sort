@@ -15,7 +15,7 @@
 
 {% for (x,y) in zip(name_list, value_list) %}
 <div class="card1">
-  <a href="#{{str(x)}}" data-toggle="modal">
+  <a href="#" data-toggle="modal" data-target="#{{str(x)}}">
   <h3 style="text-align: center;">{{str(x)}}</h3>
   <div class="container1"> 
     <p style="text-align: center;">
@@ -24,9 +24,12 @@
     Saved
 	</p>
   </div>
+</a>
 </div>
+
+
 <div class="modal fade" id="{{str(x)}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" id="modal{{str(x)}}" role="document">
     <div class="modal-content">
      {% for p,z,a,b in zip(imgkv.keys(), imgkv.values(), altimgkv.keys(), altimgkv.values()) %}
       {% if x == p %}
@@ -42,24 +45,22 @@
         {% endif %}
       {% endfor %}
         <h3 class="modal-title" id="exampleModalLabel" style="text-align: center; color: #b04c41">r/{{str(x)}} {{p}}</h3>
-        <button type="button" class="close" aria-label="Close">
-          <!-- <span aria-hidden="true">&times;</span> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         {{desc_list[loop.index0]}} {{x}} {{z}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Close</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
-<!-- {{bkgrnd[loop.index0]}} for background of subreddit -->
+</div>
+</div>
 {% endfor %}
-
-
-
 
 {% include "footer.html" %}
 
