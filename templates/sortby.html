@@ -3,6 +3,7 @@
 <head>
 	<title>Sort by</title>
 	<!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}"> -->
+	<!-- Change category to date or something else -->
 </head>
 {% include "topnav.html" %}
 <div class="limiter">
@@ -52,8 +53,8 @@
 			</div>
 			{% for t in t3.items %}
 			<div class="modal fade" id="{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  							<div class="modal-dialog" id="modal{{t.id}}" role="document">
-    							<div class="modal-content">
+  							<div class="modal-dialog" id="modal{{t.id}}" role="document" style="margin: auto; width: fit-content; max-width: 55%">
+    							<div class="modal-content" style="width: fit-content">
     								<div class="modal-header">
     									<h3 class="modal-title" id="exampleModalLabel" style="text-align: center; color: #b04c41">{{t.title}}</h3>
     									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -61,7 +62,7 @@
     									</button>
     								</div>
     							<div class="modal-body">
-    								{{t.thread_text}}
+    								<pre style="white-space: pre-wrap">{{t.thread_text}}</pre>
 								</div>
       							<div class="modal-footer">
         							<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
