@@ -242,6 +242,8 @@ def addRedditInfo():
 		empty = "None"
 		date_added = post.created_utc
 		thread_text = post.selftext
+		if "preview" in post:
+			pp.pprint(post.preview)
 		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text) values (?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text])
 		print(db.execute('SELECT changes();'))
 	db.commit()
@@ -252,6 +254,23 @@ def addRedditInfo():
 	<button type='button'><a href='url_for('viewresults') page_num=1'>View Results</a></button>
 	
 	'''
+
+@app.route('/test2', methods=['GET', 'POST'])
+def test2():
+	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+	for post in test:
+		link = 'https://www.reddit.com' + post.permalink
+		title = trim_title(post.title)
+		empty = "None"
+		date_added = post.created_utc
+		thread_text = post.selftext
+		if str(post.is_self) == "False":
+			try:
+				print(post.preview['images'][0]['source']['url'])
+			except:
+				print("none provided")
+				print(vars(post))
+	return "done"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
