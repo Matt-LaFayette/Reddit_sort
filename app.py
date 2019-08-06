@@ -28,6 +28,7 @@ class posts(db.Model):
     category = db.Column(db.String(120), unique=True, nullable=False)
     date_added = db.Column(db.String(120), unique=False, nullable=False)
     thread_text = db.Column(db.String(400), unique=True, nullable=False)
+    image = db.Column(db.String(400), unique=True, nullable=False)
 
 
 if __name__ == '__main__':
@@ -242,9 +243,13 @@ def addRedditInfo():
 		empty = "None"
 		date_added = post.created_utc
 		thread_text = post.selftext
-		if "preview" in post:
-			pp.pprint(post.preview)
-		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text) values (?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text])
+		image = ""
+		if str(post.is_self) == "False":
+			try:
+				image = (post.preview['images'][0]['source']['url'])
+			except:
+				print("none provided")
+		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text, image) values (?, ?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text, image])
 		print(db.execute('SELECT changes();'))
 	db.commit()
 
@@ -286,7 +291,7 @@ def index():
 @app.route('/createtable')
 def createtable():
 	db = get_db()
-	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text text)')
+	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
 	db.commit()
 	return "Table \"Posts\" created<br/><button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
@@ -316,8 +321,6 @@ def sortby(page_num, per_page_res):
 	print(sort_cat)
 	per_page = per_page_res
 	t3 = posts.query.filter_by(category=sort_cat).order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
-	for x in t3.items:
-		print(x.thread_text)
 	return render_template("sortby.html", order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
