@@ -518,21 +518,25 @@ a:visited {
 
 .row .cell:nth-child(1) {
   width: 10%;
-  padding-left: 1%;
   text-align: center;
 }
 
 .row .cell:nth-child(2) {
-  width: 59%;
+  width: 58%;
   padding-right: 2%
 }
 
 .row .cell:nth-child(3) {
-  width: 6%;
+  width: 10%;
 }
 
 .row .cell:nth-child(4) {
-  width: 11%;
+  width: 10%;
+  text-align: center;
+}
+
+.row .cell:nth-child(5) {
+  width: 10%;
   text-align: center;
 }
 
@@ -540,7 +544,11 @@ a:visited {
   content: none;
 }
 
-.row:after {
+div.row.header::after {
+  content: none;
+}
+
+div.row::after {
   content: none;
 }
 

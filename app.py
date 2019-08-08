@@ -210,7 +210,11 @@ def updateTable():
 @app.route('/updateTableUnsorted', methods=['GET', 'POST'])
 def updateTableUnsorted():
 	db = get_db()
-	
+	env.globals.update(zip=zip)
+	sort_cat = request.args.get('sort_cat', None)
+	order_by = request.args.get('order_by', None)
+	print(sort_cat)
+	t3 = posts.query.paginate(error_out=True)
 	results2 = posts_unsorted()
 	if request.method == 'POST':
 		x = 1
@@ -231,7 +235,7 @@ def updateTableUnsorted():
 					db.commit()
 			return redirect(url_for('updateTableUnsorted'))
 		
-	return render_template('updateTableUnsorted.html', categories=categories, results2=results2)
+	return render_template('updateTableUnsorted.html',order_by=order_by, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
@@ -270,11 +274,18 @@ def test2():
 		date_added = post.created_utc
 		thread_text = post.selftext
 		if str(post.is_self) == "False":
-			try:
-				print(post.preview['images'][0]['source']['url'])
-			except:
-				print("none provided")
-				print(vars(post))
+			#try:
+				#print(post.preview['images'][0]['source']['url'])
+			print(post.preview['images'][0]['resolutions'][1]['height'])
+				#try:
+					#if ((post.preview['images'][0]['source']['height'] > 1920) and (post.preview['images'][0]['source']['width'] > 1080)):
+					#	print("something different" + post.preview['images'][0]['resolutions'][2]['height'] + " : " + post.preview['images'][0]['resolutions'][2]['width'])
+					#else:
+				#		print(post.preview['images'][0]['source']['height'] + " : " + post.preview['images'][0]['source']['width'])	
+				#except:
+				#	print("something failed")		
+			#except:
+			#	print("none provided")
 	return "done"
 
 @app.route('/', methods=['GET', 'POST'])
