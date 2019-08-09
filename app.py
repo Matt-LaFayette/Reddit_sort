@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, url_for, request, flash, redirect
+from flask import Flask, render_template, g, url_for, request, flash, redirect, Response
 #from flask_wtf import Form
 import praw, jinja2
 import pprint
@@ -13,6 +13,7 @@ from flask_paginate import Pagination, get_page_args
 #from wtforms.validators import DataRequired
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import time
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -185,10 +186,32 @@ def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
+
+
 @app.route('/topnav', methods=['GET', 'POST'])
 def topnav():
 	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
 	return render_template('topnav.html')
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+	#t4 = posts.query.filter_by(category="None").all()
+	return render_template('test.html')
+@app.route('/test9')
+def test9():
+	return render_template('test9.html')	
+
+@app.route('/progress')
+def progress():
+	def generate():
+		x = 0
+		
+		while x <= 100:
+			yield "data:" + str(x) + "\n\n"
+			x = x + 10
+			time.sleep(0.5)
+
+	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/updateTable', methods=['GET', 'POST'])
 def updateTable():
