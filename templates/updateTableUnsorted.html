@@ -10,8 +10,9 @@
 <h1>All Posts</h1>
 	<div class="container-table100">
 			<div class="wrap-table100">
-				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">15</button></a>
-				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=30, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">30</button></a>
+				<a href="{{url_for('updateTableUnsorted', page_num=1, per_page_res=count, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">All</button></a>
+				<a href="{{url_for('updateTableUnsorted', page_num=t3.page, per_page_res=15, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">15</button></a>
+				<a href="{{url_for('updateTableUnsorted', page_num=t3.page, per_page_res=30, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">30</button></a>
 					<div class="table">
 						<div class="row header" style="content: none">
 							<div class="cell">Number</div>
@@ -20,10 +21,34 @@
 							<div class="cell">Category</div>
 							<div class="cell">Change?</div>
 						</div>
-						{% for t, post in zip(t3.items, results2) %} 
+						{% if per_page_res == count %}
+							{% for t, post in zip(t4, results2) %}
 						<div class="row">
 							<div class="cell" data-title="Number">
-								1
+								{{ loop.index }}
+							</div>
+							<div class="cell" data-title="Post"><a href="#" data-toggle="modal" data-target="#{{t.id}}">{{t.title}}</div>
+							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
+							<div class="cell" data-title="Category">{{t.category}}</div>
+							<div class="cell" data-title="Change?">
+								<form action="{{url_for('updateTable')}}" method="POST">
+									<select name="{{loop.index}}cat">
+    									{% for categories in categories %}
+    										<option value= "{{categories}}" {% if post['category'] == categories %} SELECTED{% endif %}>{{ categories }}</option>
+    									{% endfor %}
+									</select>
+							</div>
+						</div>
+							{% endfor %}
+						{% else %}
+						{% for t,post,i in zip(t3.items, results2, range(per_page, 0, -1)) %}
+						<div class="row">
+							<div class="cell" data-title="Number">
+								{% if t3.page == 1 %}
+								{{(t3.page * (per_page+1))-i}}
+								{% else %}
+								{{(t3.page * (per_page))-(i-1)}}
+								{% endif %}
 							</div>
 							<div class="cell" data-title="Post"><a href="#" data-toggle="modal" data-target="#{{t.id}}">{{t.title}}</div>
 							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
@@ -38,9 +63,23 @@
 							</div>
 						</div>
 						{% endfor %}
+						<nav aria-label="Page navigation example">
+							<ul class="pagination" style="margin:1px">
+										<li class="page-item"><a class="page-link" href="{{url_for('updateTableUnsorted', page_num=(t3.page + 1), per_page_res=per_page, sort_cat=sort_cat )}}">Previous</a>
+								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
+									{% if page %}
+										
+										<li class="page-item" ><a class="page-link {% if page == t3.page %}{{'highlight'}}" style="background-color: transparent;"{% else %}"{% endif %}" href="{{url_for('updateTableUnsorted', page_num=page, per_page_res=per_page, sort_cat=sort_cat )}}">{{ page }}</a>
+									{% else %}
+										<li class="page-item"><a class="page-link" href="#">...</a>		
+									{% endif %}
+								{% endfor %}
+										<li class="page-item"><a class="page-link" href="{{url_for('updateTableUnsorted', page_num=(t3.page + 1), per_page_res=per_page, sort_cat=sort_cat )}}">Next</a>
+							</ul>
+						</nav>
+						{% endif %}
 					<button class="btn btn-primary" type="submit" name="name" value="View Tables">Update</button>
 					</div>
-
 				{% for t in t3.items %}
 			<div class="modal fade" id="{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   							<div class="modal-dialog" id="modal{{t.id}}" role="document" style="margin: auto; width: fit-content; max-width: 55%">

@@ -622,3 +622,7 @@ div.row::after {
   padding: 8px 16px;
   text-decoration: none;
 }
+
+a.page-link.highlight {
+  background-color: #c5c7c5;
+}

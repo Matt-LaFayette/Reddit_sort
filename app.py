@@ -44,6 +44,11 @@ def get_users(offset=0, per_page=10):
 def get_results(offset=0, per_page=10):
     return results[offset: offset + per_page]
 
+t4 = posts.query.filter_by(category="None").all()
+count = 0
+for i in t4:
+	count = count + 1
+
 
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
@@ -207,14 +212,20 @@ def updateTable():
 			return redirect(url_for('updateTable'))		
 	return render_template('updateTable.html', categories=categories, results=results)
 
-@app.route('/updateTableUnsorted', methods=['GET', 'POST'])
-def updateTableUnsorted():
+@app.route('/updateTableUnsorted/<int:page_num>/<int:per_page_res>',  methods=['GET', 'POST'])
+def updateTableUnsorted(page_num, per_page_res):
 	db = get_db()
 	env.globals.update(zip=zip)
 	sort_cat = request.args.get('sort_cat', None)
 	order_by = request.args.get('order_by', None)
+	show_all = request.args.get('per_page_res', None)
+	per_page = per_page_res
 	print(sort_cat)
-	t3 = posts.query.paginate(error_out=True)
+	t4 = posts.query.filter_by(category="None").all()
+#	count = 0
+#	for i in t4:
+#		count = count + 1	
+	t3 = posts.query.filter_by(category="None").order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
 	results2 = posts_unsorted()
 	if request.method == 'POST':
 		x = 1
@@ -235,7 +246,7 @@ def updateTableUnsorted():
 					db.commit()
 			return redirect(url_for('updateTableUnsorted'))
 		
-	return render_template('updateTableUnsorted.html',order_by=order_by, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
+	return render_template('updateTableUnsorted.html', per_page=per_page, per_page_res=per_page_res, count=count, order_by=order_by, t4=t4, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():

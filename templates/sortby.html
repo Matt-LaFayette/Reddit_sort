@@ -38,9 +38,10 @@
 							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{t.category}}</div>
 						</div>
-								{% endfor %}
+						{% endfor %}
 						<nav aria-label="Page navigation example">
 							<ul class="pagination" style="margin:1px">
+										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=(t3.page + 1), per_page_res=per_page, sort_cat=sort_cat )}}">Previous</a>
 								{% for page in t3.iter_pages(right_edge=1, left_edge=5) %}
 									{% if page %}
 										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=page, per_page_res=per_page, sort_cat=sort_cat )}}">{{ page }}</a>
@@ -48,6 +49,7 @@
 										<li class="page-item"><a class="page-link" href="#">...</a>
 									{% endif %}
 								{% endfor %}
+										<li class="page-item"><a class="page-link" href="{{url_for('sortby', page_num=(t3.page + 1), per_page_res=per_page, sort_cat=sort_cat )}}">Next</a>
 							</ul>
 						</nav>
 					</div>

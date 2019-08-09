@@ -16,7 +16,7 @@
    </li>
    <li class='active has-sub'><a href='#'><span>Update</span></a>
       <ul>
-         <li class='has-sub'><a href='{{url_for("updateTableUnsorted")}}'><span>Unsorted</span></a></li>
+         <li class='has-sub'><a href='{{url_for("updateTableUnsorted", page_num=1, per_page_res=count)}}'><span>Unsorted</span></a></li>
          <li class='has-sub'><a href='{{url_for("updateTable")}}'><span>All Posts</span></a></li>
       </ul>
     </li>
