@@ -138,6 +138,12 @@ for i in subscribed:
 			altimgkv[i.display_name] = i.community_icon
 
 
+class DataStore():
+    a = None
+    c = None
+
+data = DataStore()
+
 # end
 
 @app.context_processor
@@ -191,7 +197,7 @@ def close_db(error):
 @app.route('/topnav', methods=['GET', 'POST'])
 def topnav():
 	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
-	return render_template('topnav.html')
+	return render_template('topnav.html', count=count)
 
 @app.route('/test', methods=['GET', 'POST'])
 def test():
@@ -204,13 +210,12 @@ def test9():
 @app.route('/progress')
 def progress():
 	def generate():
-		x = 0
-		
-		while x <= 100:
-			yield "data:" + str(x) + "\n\n"
-			x = x + 10
+		t4 = posts.query.filter_by(category="None").all()
+		count_results = 0
+		for x in t4:
+			yield "data:" + str(count_results) + "\n\n"
+			count_results = count_results + 1
 			time.sleep(0.5)
-
 	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/updateTable', methods=['GET', 'POST'])
@@ -275,6 +280,7 @@ def updateTableUnsorted(page_num, per_page_res):
 def addRedditInfo():
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	db = get_db()
+	count_list = []
 	for post in test:
 		link = 'https://www.reddit.com' + post.permalink
 		title = trim_title(post.title)
@@ -282,21 +288,28 @@ def addRedditInfo():
 		date_added = post.created_utc
 		thread_text = post.selftext
 		image = ""
+		#add_count = add_count + 1
 		if str(post.is_self) == "False":
 			try:
 				image = (post.preview['images'][0]['source']['url'])
 			except:
 				print("none provided")
 		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text, image) values (?, ?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text, image])
-		print(db.execute('SELECT changes();'))
+		#count_list.append((str(db.execute('SELECT changes();'))))
+		#print(count_list.count())
+		count_list.append(db.execute('SELECT changes();'))
+	data.a = (len(count_list))
 	db.commit()
+	return render_template('addRedditInfo.html')
+	#return render_template('addRedditInfo.html')
 
-	return '''stuff added<br/>
-	<button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>
-	</br>
-	<button type='button'><a href='url_for('viewresults') page_num=1'>View Results</a></button>
-	
-	'''
+@app.route('/progress_append')
+def progress_append():
+	def generate():
+		for x in range(0, data.a):
+			yield "data:" + str(x) + "\n\n"
+			time.sleep(0.5)
+	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/test2', methods=['GET', 'POST'])
 def test2():
@@ -330,7 +343,7 @@ def index():
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 	for x in test:
 		pp.pprint(vars(x))
-	return render_template('index.html', altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
+	return render_template('index.html', count=count, altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/createtable')
@@ -357,7 +370,7 @@ def viewresults(page_num, per_page_res):
 
 @app.route('/devArea')
 def devArea():
-	return render_template("devArea.html")
+	return render_template("devArea.html", count=count)
 
 @app.route('/sortby/<int:page_num>/<int:per_page_res>', methods=['GET', 'POST'])
 def sortby(page_num, per_page_res):

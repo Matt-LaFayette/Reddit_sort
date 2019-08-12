@@ -1,4 +1,6 @@
 <html>
+{% include "topnav.html" %}
+<div class="classname">
 <h1>DEV AREA</h1>
 </br>
 </br>
@@ -9,4 +11,28 @@
 <button type="button"><a href="http://127.0.0.1:5000/viewresults">View Results</a></button>
 <button type="button"><a href="{{url_for('deleteposts')}}">delete from db</a></button>
 <button type="button"><a href="{{url_for('unfavpost')}}">Unsave post from Reddit Account</a></button>
+<button type="button" onclick="myFunction()"><a href="http://127.0.0.1:5000/addRedditInfo">test</a></button>
+</div>
+<script>
+function myFunction() {
+    var divsToHide = document.getElementsByClassName("classname");
+    var divsToShow = document.getElementsByClassName("loader");
+        for(var i = 0; i < divsToHide.length; i++){
+        divsToHide[i].style.visibility = "hidden"; // or
+        divsToHide[i].style.display = "none"; // depending on what you're doing
+    }
+        for(var i = 0; i < divsToShow.length; i++){
+        divsToShow[i].style.visibility = "visible"; // or
+    }
+    document.getElementsByClassName("select").innerHTML = "Loading Please Wait..."
+
+}
+</script>
+</br>
+</br>
+</br>
+<h2 class="select"></h2>
+<div class="loader" style="visibility: hidden;margin-left: 50%;"></div>
+
+
 </html>
