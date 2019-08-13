@@ -33,7 +33,7 @@ class posts(db.Model):
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(debug=True, host="0.0.0.0", port=8080, threaded=True)
 
 env = jinja2.Environment()
 env.globals.update(zip=zip)
@@ -67,6 +67,33 @@ results = []
 
 for post in test:
 	results.append(post.subreddit.display_name)
+
+class DataStore():
+    a = None
+    c = None
+
+data = DataStore()
+
+
+count_list = []
+for post in test:
+	link = 'https://www.reddit.com' + post.permalink
+	title = trim_title(post.title)
+	empty = "None"
+	date_added = post.created_utc
+	thread_text = post.selftext
+	image = ""
+	#add_count = add_count + 1
+	if str(post.is_self) == "False":
+		try:
+			image = (post.preview['images'][0]['source']['url'])
+		except:
+			print("none provided")
+	db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text, image) values (?, ?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text, image])
+	#count_list.append((str(db.execute('SELECT changes();'))))
+	#print(count_list.count())
+	count_list.append(db.execute('SELECT changes();'))
+data.a = (len(count_list))
 
 
 counter = collections.Counter(results).most_common(10)
@@ -300,7 +327,7 @@ def addRedditInfo():
 		count_list.append(db.execute('SELECT changes();'))
 	data.a = (len(count_list))
 	db.commit()
-	return render_template('addRedditInfo.html')
+	return 
 	#return render_template('addRedditInfo.html')
 
 @app.route('/progress_append')
@@ -308,7 +335,7 @@ def progress_append():
 	def generate():
 		for x in range(0, data.a):
 			yield "data:" + str(x) + "\n\n"
-			time.sleep(0.5)
+			#time.sleep(0.5)
 	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/test2', methods=['GET', 'POST'])
