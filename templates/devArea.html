@@ -1,6 +1,7 @@
 <html>
 {% include "topnav.html" %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='JS/pace.min.js') }}"></script>
 <div class="classname">
 <h1>DEV AREA</h1>
 </br>
@@ -12,11 +13,17 @@
 <button type="button"><a href="http://127.0.0.1:5000/viewresults">View Results</a></button>
 <button type="button"><a href="{{url_for('deleteposts')}}">delete from db</a></button>
 <button type="button"><a href="{{url_for('unfavpost')}}">Unsave post from Reddit Account</a></button>
-<button type="button" onclick="myFunction(),myFunction3()"><a href="http://127.0.0.1:5000/addRedditInfo">test</a></button>
+<script>
+function myFunction() {
+    $('.test').on('click', function(e) { pace.start(); });
+    $.ajax({ url : "http://127.0.0.1:5000/addRedditInfo", type : 'GET'}) 
+}
+</script>
+<button type="button" class="test" onclick="myFunction(), myFunction2()">test</button>
 </div>
 
 <script>
-function myFunction() {
+function myFunction2() {
     var divsToHide = document.getElementsByClassName("classname");
     var divsToShow = document.getElementsByClassName("bar");
         for(var i = 0; i < divsToHide.length; i++){
@@ -26,27 +33,31 @@ function myFunction() {
         for(var i = 0; i < divsToShow.length; i++){
         divsToShow[i].style.visibility = "visible"; // or
     }
-}
-</script>
-<script>
-function myFunction2() {
     document.getElementsByClassName("select").innerHTML = "Loading Please Wait..."
-    let promise = new Promise((resolve, reject) => {
-    	window.location.href = "http://127.0.0.1:5000/addRedditInfo";
-    })
 }
-async function myFunction3() {
-	await myFunction2();
-	var source =  new EventSource("/progress_append");
-	source.onmessage = function(event) {
-		$('.progress-bar').css('width', event.data+'%').attr('aria-valuenow', event.data);
-		$('.progress-bar-label').text(event.data+'%');
-		if(event.data == 100){
-			source.close()
-	}
-}
-}
+
 </script>
+<!-- need to change hard coded total value 849 -->
+    <script>
+
+    var source = new EventSource("/progress_append");
+    source.onmessage = function(event) {
+        try{
+        var division = Math.ceil((event.data/849 * 100));
+        console.log(division);
+        $('.progress-bar').css('width', division+'%').attr('aria-valuenow', division);
+        $('.progress-bar-label').text(division+'%');
+    }
+    catch {
+        console.error(error);
+    }
+        if(division == 100){
+            source.close();
+        }
+    }
+    </script>
+
+
 
 </br>
 </br>

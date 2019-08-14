@@ -13,7 +13,17 @@ from flask_paginate import Pagination, get_page_args
 #from wtforms.validators import DataRequired
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import random
+import threading
 import time
+from flask import jsonify
+
+
+
+
+exporting_threads = {}
+app = Flask(__name__)
+app.debug = True
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -93,7 +103,7 @@ for post in test:
 	#count_list.append((str(db.execute('SELECT changes();'))))
 	#print(count_list.count())
 	count_list.append(db.execute('SELECT changes();'))
-data.a = (len(count_list))
+#data.a = (len(count_list))
 
 
 counter = collections.Counter(results).most_common(10)
@@ -213,12 +223,36 @@ def trim_title(title):
 	else:
 		return title
 
+class ExportingThread(threading.Thread):
+	def __init__(self):
+		self.progress = 0
+		super().__init__()
+
+	def run(self):
+		for x in t4:
+			yield "data:" + str(count_results) + "\n\n"
+			count_results = count_results + 1
+			time.sleep(0.5)
 
 @app.teardown_appcontext
 def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
+@app.route('/test5')
+def test5():
+    global exporting_threads
+
+    thread_id = 500
+    exporting_threads[thread_id] = ExportingThread()
+    exporting_threads[thread_id].start()
+
+    return 'task id: #%s' % thread_id
+
+@app.route('/progress/<int:thread_id>')
+def progress(thread_id):
+    global exporting_threads
+    return str(exporting_threads[thread_id].progress)
 
 
 @app.route('/topnav', methods=['GET', 'POST'])
@@ -234,16 +268,16 @@ def test():
 def test9():
 	return render_template('test9.html')	
 
-@app.route('/progress')
-def progress():
-	def generate():
-		t4 = posts.query.filter_by(category="None").all()
-		count_results = 0
-		for x in t4:
-			yield "data:" + str(count_results) + "\n\n"
-			count_results = count_results + 1
-			time.sleep(0.5)
-	return Response(generate(), mimetype= 'text/event-stream')
+#@app.route('/progress')
+#def progress():
+#	def generate():
+#		t4 = posts.query.filter_by(category="None").all()
+#		count_results = 0
+#		for x in t4:
+#			yield "data:" + str(count_results) + "\n\n"
+#			count_results = count_results + 1
+#			time.sleep(0.5)
+#	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/updateTable', methods=['GET', 'POST'])
 def updateTable():
@@ -324,18 +358,26 @@ def addRedditInfo():
 		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text, image) values (?, ?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text, image])
 		#count_list.append((str(db.execute('SELECT changes();'))))
 		#print(count_list.count())
-		count_list.append(db.execute('SELECT changes();'))
-	data.a = (len(count_list))
+		chng = db.execute('SELECT changes();')
+		for x in chng:
+			for y in x:
+				print (y)
+				if (y == 1):
+					count_list.append(db.execute('SELECT changes();'))
+		data.a = (len(count_list))
+	#if len(count_list)==0:
+	#	count_list.append(100)
+	#	data.a = count_list[0]
+	print (count_list)
 	db.commit()
-	return 
-	#return render_template('addRedditInfo.html')
+	print (data.a)
+	return "complete! <button><a href='https://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
 @app.route('/progress_append')
 def progress_append():
 	def generate():
 		for x in range(0, data.a):
 			yield "data:" + str(x) + "\n\n"
-			#time.sleep(0.5)
 	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/test2', methods=['GET', 'POST'])
