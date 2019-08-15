@@ -1,7 +1,7 @@
 <html>
-{% include "topnav.html" %}
+{% include "bootstrap/base.html" %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='JS/pace.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
 <div class="classname">
 <h1>DEV AREA</h1>
 </br>
@@ -21,6 +21,7 @@ function myFunction() {
 </script>
 <button type="button" class="test" onclick="myFunction(), myFunction2()">test</button>
 </div>
+
 
 <script>
 function myFunction2() {
@@ -43,7 +44,7 @@ function myFunction2() {
     var source = new EventSource("/progress_append");
     source.onmessage = function(event) {
         try{
-        var division = Math.ceil((event.data/849 * 100));
+        var division = Math.ceil((event.data/{{add_post_total}} * 100));
         console.log(division);
         $('.progress-bar').css('width', division+'%').attr('aria-valuenow', division);
         $('.progress-bar-label').text(division+'%');
@@ -53,6 +54,8 @@ function myFunction2() {
     }
         if(division == 100){
             source.close();
+            document.getElementById("find").innerHTML = "Complete!";
+            getElementById("go_home").style.visibility = "visible";
         }
     }
     </script>
@@ -70,7 +73,9 @@ function myFunction2() {
 		</div>
 	</div>
 </div>	
+<h1 id="find"></h1>
 
+<button class="" id="go_home" style="visibility: hidden"><a href="{{url_for('index')}}">Home</a></button>
 <!-- <h2 class="select"></h2> -->
 <!-- <div class="loader" style="visibility: hidden;margin-left: 50%;"></div> -->
 

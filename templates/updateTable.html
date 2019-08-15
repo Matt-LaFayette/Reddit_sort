@@ -10,9 +10,6 @@
 <h1>All Posts</h1>
 	<div class="container-table100">
 			<div class="wrap-table100">
-				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=15, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">15</button></a>
-				<a href="{{url_for('sortby', page_num=t3.page, per_page_res=30, order_by=order_by, sort_cat=sort_cat )}}"><button type="button" class="btn btn-primary">30</button></a>
-					<div class="table">
 						<div class="row header" style="content: none">
 							<div class="cell">Number</div>
 							<div class="cell">Post</div>
@@ -20,7 +17,7 @@
 							<div class="cell">Category</div>
 							<div class="cell">Change?</div>
 						</div>
-						{% for t, post in zip(t3.items, results2) %} 
+						{% for t, post in zip(t3, results2) %} 
 						<div class="row">
 							<div class="cell" style="width: 10%" data-title="Number">
 								1
@@ -38,7 +35,7 @@
 							</div>
 						</div>
 						{% endfor %}
-					<button class="btn btn-primary" type="submit" name="name" value="View Tables">Update</button>
+					<button class="btn btn-primary" type="submit" name="name" value="Update Tables">Update</button>
 					</div>
 
 				{% for t in t3.items %}

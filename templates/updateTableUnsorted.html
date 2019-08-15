@@ -32,8 +32,8 @@
 							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{t.category}}</div>
 							<div class="cell" data-title="Change?">
-								<form action="{{url_for('updateTable')}}" method="POST">
-									<select name="{{loop.index}}cat">
+								<form action="{{url_for('updateTableUnsorted', page_num=t3.page, per_page_res=per_page, sort_cat=sort_cat )}}" method="POST">
+									<select name="{{loop.index}}cat2">
     									{% for categories in categories %}
     										<option value= "{{categories}}" {% if post['category'] == categories %} SELECTED{% endif %}>{{ categories }}</option>
     									{% endfor %}
@@ -55,7 +55,7 @@
 							<div class="cell" data-title="Link"><a href="{{t.link}}" target='_blank'>Link</a></div>
 							<div class="cell" data-title="Category">{{t.category}}</div>
 							<div class="cell" data-title="Change?">
-								<form action="{{url_for('updateTable')}}" method="POST">
+								<form action="{{url_for('updateTableUnsorted', page_num=t3.page, per_page_res=per_page, sort_cat=sort_cat )}}" method="POST">
 									<select name="{{loop.index}}cat">
     									{% for categories in categories %}
     										<option value= "{{categories}}" {% if post['category'] == categories %} SELECTED{% endif %}>{{ categories }}</option>
@@ -79,7 +79,7 @@
 							</ul>
 						</nav>
 						{% endif %}
-					<button class="btn btn-primary" type="submit" name="name" value="View Tables">Update</button>
+					<button class="btn btn-primary" type="submit" name="update" value="Update Table Unsorted">Update</button>
 					</div>
 				{% for t in t3.items %}
 			<div class="modal fade" id="{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

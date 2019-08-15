@@ -41,7 +41,6 @@ class posts(db.Model):
     thread_text = db.Column(db.String(400), unique=True, nullable=False)
     image = db.Column(db.String(400), unique=True, nullable=False)
 
-
 if __name__ == '__main__':
 	app.run(debug=True, host="0.0.0.0", port=8080, threaded=True)
 
@@ -55,10 +54,7 @@ def get_users(offset=0, per_page=10):
 def get_results(offset=0, per_page=10):
     return results[offset: offset + per_page]
 
-t4 = posts.query.filter_by(category="None").all()
-count = 0
-for i in t4:
-	count = count + 1
+
 
 
 bootstrap = Bootstrap(app)
@@ -84,7 +80,6 @@ class DataStore():
 
 data = DataStore()
 
-
 count_list = []
 for post in test:
 	link = 'https://www.reddit.com' + post.permalink
@@ -103,7 +98,8 @@ for post in test:
 	#count_list.append((str(db.execute('SELECT changes();'))))
 	#print(count_list.count())
 	count_list.append(db.execute('SELECT changes();'))
-#data.a = (len(count_list))
+
+	
 
 
 counter = collections.Counter(results).most_common(10)
@@ -195,6 +191,11 @@ def utility_functions():
 def inject_user():
     return dict(category=categories)
 
+def get_db():
+	if not hasattr(g, 'sqlite3'):
+		g.sqlite_db = connect_db()
+	return g.sqlite_db
+
 def posts_all():
 	db = get_db()
 	cur = db.execute('select id, title, link, category from posts')
@@ -212,10 +213,7 @@ def connect_db():
 	sql.row_factory = sqlite3.Row
 	return sql
 
-def get_db():
-	if not hasattr(g, 'sqlite3'):
-		g.sqlite_db = connect_db()
-	return g.sqlite_db
+
 
 def trim_title(title):
 	if len(title) > 120:
@@ -223,36 +221,13 @@ def trim_title(title):
 	else:
 		return title
 
-class ExportingThread(threading.Thread):
-	def __init__(self):
-		self.progress = 0
-		super().__init__()
-
-	def run(self):
-		for x in t4:
-			yield "data:" + str(count_results) + "\n\n"
-			count_results = count_results + 1
-			time.sleep(0.5)
 
 @app.teardown_appcontext
 def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
-@app.route('/test5')
-def test5():
-    global exporting_threads
 
-    thread_id = 500
-    exporting_threads[thread_id] = ExportingThread()
-    exporting_threads[thread_id].start()
-
-    return 'task id: #%s' % thread_id
-
-@app.route('/progress/<int:thread_id>')
-def progress(thread_id):
-    global exporting_threads
-    return str(exporting_threads[thread_id].progress)
 
 
 @app.route('/topnav', methods=['GET', 'POST'])
@@ -260,34 +235,19 @@ def topnav():
 	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
 	return render_template('topnav.html', count=count)
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-	#t4 = posts.query.filter_by(category="None").all()
-	return render_template('test.html')
-@app.route('/test9')
-def test9():
-	return render_template('test9.html')	
-
-#@app.route('/progress')
-#def progress():
-#	def generate():
-#		t4 = posts.query.filter_by(category="None").all()
-#		count_results = 0
-#		for x in t4:
-#			yield "data:" + str(count_results) + "\n\n"
-#			count_results = count_results + 1
-#			time.sleep(0.5)
-#	return Response(generate(), mimetype= 'text/event-stream')
 
 @app.route('/updateTable', methods=['GET', 'POST'])
 def updateTable():
 	db = get_db()
 	#categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
 	results = posts_all()
+	order_by = request.args.get('order_by', None)
+	t4 = posts.query.filter_by(category="None").all()
+	t3 = posts.query.filter_by(category="None").order_by(order_by)
 	if request.method == 'POST':
 		x = 1
 		results = posts_all()
-		if request.form['name'] == 'View Tables':
+		if request.form['name'] == 'Update Tables':
 			for post in results:
 				db = get_db()
 				catx = str(x) + 'cat'
@@ -298,8 +258,8 @@ def updateTable():
 				if cat != post['category']:
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
 					db.commit()
-			return redirect(url_for('updateTable'))		
-	return render_template('updateTable.html', categories=categories, results=results)
+			return redirect(url_for('updateTable'))
+	return render_template('updateTable.html', categories=categories, zip=zip, results=results, count=count, t3=t3, t4=t4)
 
 @app.route('/updateTableUnsorted/<int:page_num>/<int:per_page_res>',  methods=['GET', 'POST'])
 def updateTableUnsorted(page_num, per_page_res):
@@ -309,31 +269,35 @@ def updateTableUnsorted(page_num, per_page_res):
 	order_by = request.args.get('order_by', None)
 	show_all = request.args.get('per_page_res', None)
 	per_page = per_page_res
-	print(sort_cat)
 	t4 = posts.query.filter_by(category="None").all()
-#	count = 0
-#	for i in t4:
-#		count = count + 1	
 	t3 = posts.query.filter_by(category="None").order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
 	results2 = posts_unsorted()
+	#print(posts_unsorted())
+	run = db.execute('SELECT count(*) FROM posts;')
+	for x in run:
+		for y in x:
+			count = y
+	#print(count)
 	if request.method == 'POST':
 		x = 1
 		results2 = posts_unsorted()
-		if request.form.get('name') == 'View Tables':
+		if request.form.get('update') == 'Update Table Unsorted':
 			for post in results2:
 				db = get_db()
 				catx = str(x) + 'cat2'
-				results2 = posts_unsorted()
-				#print(catx)
-				cat = request.form.get(catx)
-				#print(cat)
+				results2 = posts_unsorted()			
+				cat = str(request.form.get(catx))
+				t4 = posts.query.filter_by(category="None").all()				
 				post_title = post['title']
-				#print(post_title)
+				#print(cat)
 				x = x + 1
+				#print (cat + " " + post['category'])
 				if cat != post['category']:
+					print ("cat did not match post category")
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
 					db.commit()
-			return redirect(url_for('updateTableUnsorted'))
+			#return render_template('updateTableUnsorted.html', per_page=per_page, per_page_res=per_page_res, order_by=order_by, t4=t4, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
+			return redirect(url_for('updateTableUnsorted', page_num=1, per_page_res=per_page_res))
 		
 	return render_template('updateTableUnsorted.html', per_page=per_page, per_page_res=per_page_res, count=count, order_by=order_by, t4=t4, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
 
@@ -361,10 +325,10 @@ def addRedditInfo():
 		chng = db.execute('SELECT changes();')
 		for x in chng:
 			for y in x:
-				print (y)
 				if (y == 1):
 					count_list.append(db.execute('SELECT changes();'))
 		data.a = (len(count_list))
+		print (data.a)
 	#if len(count_list)==0:
 	#	count_list.append(100)
 	#	data.a = count_list[0]
@@ -409,9 +373,16 @@ def index():
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
 	env.globals.update(str=str)
+	t4 = posts.query.filter_by(category="None").all()
+	db = get_db()
+	run = db.execute('SELECT count(*) FROM posts;')
+	for x in run:
+		for y in x:
+			count = y
+	print(count)
 	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
-	for x in test:
-		pp.pprint(vars(x))
+	#for x in test:
+	#	pp.pprint(vars(x))
 	return render_template('index.html', count=count, altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
@@ -439,7 +410,17 @@ def viewresults(page_num, per_page_res):
 
 @app.route('/devArea')
 def devArea():
-	return render_template("devArea.html", count=count)
+	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+	bring_in_count = 0
+	for post in test:
+		bring_in_count = bring_in_count + 1
+	db = get_db()
+	total_count = db.execute('SELECT count(*) FROM posts;')
+	for x in total_count:
+		for y in x:
+			total_in_db = y
+	add_post_total = bring_in_count - total_in_db - 1
+	return render_template("devArea.html", add_post_total=add_post_total)
 
 @app.route('/sortby/<int:page_num>/<int:per_page_res>', methods=['GET', 'POST'])
 def sortby(page_num, per_page_res):
@@ -448,7 +429,7 @@ def sortby(page_num, per_page_res):
 	print(sort_cat)
 	per_page = per_page_res
 	t3 = posts.query.filter_by(category=sort_cat).order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
-	return render_template("sortby.html", order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
+	return render_template("sortby.html", count=count, order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
 def deleteposts():
@@ -470,7 +451,7 @@ def deleteposts():
 				db.execute("DELETE FROM posts WHERE id = (?);", [post_title])
 				db.commit()
 		return redirect(url_for('deleteposts'))
-	return render_template("deleteposts.html", results=results)
+	return render_template("deleteposts.html", results=results, count=count)
 
 @app.route('/unfavpost', methods=['GET', 'POST'])
 def unfavpost():
@@ -498,7 +479,7 @@ def unfavpost():
 				db.commit()
 				print ("deleted")
 		return redirect(url_for('unfavpost'))
-	return render_template("unfavpost.html", results=results)
+	return render_template("unfavpost.html", results=results, count=count)
 
 @app.route('/unfavunsort', methods=['GET', 'POST'])
 def unfavunsort():
