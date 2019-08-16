@@ -626,3 +626,12 @@ div.row::after {
 a.page-link.highlight {
   background-color: #c5c7c5;
 }
+
+.no-js #loader { display: none;  }
+.js #loader { display: block; position: absolute; left: 100px; top: 0; }
+
+.se-pre-con {
+  position: fixed;
+  width: 100px;
+  background: url(https://j2n9a3i8.stackpathcdn.com/wp-content/uploads/2014/08/Preloader_3.gif) center no-repeat #fff;
+}

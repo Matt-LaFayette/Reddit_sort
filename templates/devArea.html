@@ -55,7 +55,9 @@ function myFunction2() {
         if(division == 100){
             source.close();
             document.getElementById("find").innerHTML = "Complete!";
-            getElementById("go_home").style.visibility = "visible";
+            var divsToShow = document.getElementsById("go_home");
+            for(var i = 0; i < divsToShow.length; i++){
+                divsToShow[i].style.visibility = "visible";
         }
     }
     </script>
@@ -75,7 +77,7 @@ function myFunction2() {
 </div>	
 <h1 id="find"></h1>
 
-<button class="" id="go_home" style="visibility: hidden"><a href="{{url_for('index')}}">Home</a></button>
+<button class="bleh" id="go_home" style="visibility: hidden"><a href="{{url_for('index')}}">Home</a></button>
 <!-- <h2 class="select"></h2> -->
 <!-- <div class="loader" style="visibility: hidden;margin-left: 50%;"></div> -->
 

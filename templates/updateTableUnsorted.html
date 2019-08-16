@@ -2,6 +2,8 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/style.css') }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
 </head>
 <body>
 {% include "topnav.html" %}
@@ -79,7 +81,8 @@
 							</ul>
 						</nav>
 						{% endif %}
-					<button class="btn btn-primary" type="submit" name="update" value="Update Table Unsorted">Update</button>
+
+					<button class="btn btn-primary" type="submit" name="update" value="Update Table Unsorted" onclick="myFunction2()">Update</button>
 					</div>
 				{% for t in t3.items %}
 			<div class="modal fade" id="{{t.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -104,12 +107,16 @@
       							<div class="modal-footer">
         							<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
     							</div>
-								</div>
+							</div>
 							</div>
 						</div>
 						{% endfor %}
+
+
 <br/>
 </form>	
+</div>
+</div>
 </br>
 </br>
 

@@ -296,6 +296,7 @@ def updateTableUnsorted(page_num, per_page_res):
 					print ("cat did not match post category")
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
 					db.commit()
+				data.b = x
 			#return render_template('updateTableUnsorted.html', per_page=per_page, per_page_res=per_page_res, order_by=order_by, t4=t4, t3=t3, posts=posts, zip=zip, sort_cat=sort_cat, categories=categories, results2=results2)
 			return redirect(url_for('updateTableUnsorted', page_num=1, per_page_res=per_page_res))
 		
