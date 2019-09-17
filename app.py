@@ -142,11 +142,7 @@ categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking
 
 # from index.html not sure if it makes it faster or slower
 
-reddit = praw.Reddit(client_id=client_id,
-                 client_secret=client_secret,
-                 user_agent=user_agent,
-                 username=username,
-                 password=password)
+
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
 
