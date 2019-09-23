@@ -174,6 +174,13 @@ for i in subscribed:
 			imgkv[i.display_name] = i.banner_background_image
 			altimgkv[i.display_name] = i.community_icon
 
+count = 0
+db = get_db()
+run = db.execute('SELECT count(*) FROM posts;')
+for x in run:
+	for y in x:
+		count = y
+
 
 class DataStore():
     a = None
