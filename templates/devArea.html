@@ -16,7 +16,7 @@
 <script>
 function myFunction() {
     $('.test').on('click', function(e) { pace.start(); });
-    $.ajax({ url : "http://127.0.0.1:5000/addRedditInfo", type : 'GET'}) 
+    $.ajax({ url : "{{url_for('addRedditInfo')}}", type : 'GET'}) 
 }
 </script>
 <button type="button" class="test" onclick="myFunction(), myFunction2()">test</button>
