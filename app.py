@@ -4,7 +4,7 @@ import praw, jinja2
 import pprint
 import sqlite3
 import collections
-from config import *
+# from config import *
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template
 from flask_paginate import Pagination, get_page_args
