@@ -4,7 +4,7 @@ import praw, jinja2
 import pprint
 import sqlite3
 import collections
-# from config import *
+from config import *
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template
 from flask_paginate import Pagination, get_page_args
@@ -61,18 +61,18 @@ def get_results(offset=0, per_page=10):
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
-reddit = praw.Reddit(client_id=os.environ.get('client_id'),
-                      client_secret=os.environ.get('client_secret'),
-                      user_agent=os.environ.get('client_secret'),
-                      username=os.environ.get('username'),
-                      password=os.environ.get('password'))
+#reddit = praw.Reddit(client_id=os.environ.get('client_id'),
+#                      client_secret=os.environ.get('client_secret'),
+#                      user_agent=os.environ.get('client_secret'),
+#                      username=os.environ.get('username'),
+#                      password=os.environ.get('password'))
 
 
-# reddit = praw.Reddit(client_id=client_id,
-#                      client_secret=client_secret,
-#                      user_agent=client_secret,
-#                      username=username,
-#                      password=password)
+reddit = praw.Reddit(client_id=client_id,
+                      client_secret=client_secret,
+                      user_agent=client_secret,
+                      username=username,
+                      password=password)
 
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
