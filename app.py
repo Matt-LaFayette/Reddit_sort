@@ -401,7 +401,7 @@ def createtable():
 	db = get_db()
 	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
 	db.commit()
-	return "Table \"Posts\" created<br/><button type='button'><a href='{{url_for('devArea')}}''>Go Back</a></button>"
+	return "Table \"Posts\" created<br/><button type='button'><a href="{{url_for('devArea')}}">Go Back</a></button>"
 
 
 @app.route('/droptable')
@@ -439,6 +439,10 @@ def sortby(page_num, per_page_res):
 	print(sort_cat)
 	per_page = per_page_res
 	t3 = posts.query.filter_by(category=sort_cat).order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
+	run = db.execute('SELECT count(*) FROM posts;')
+	for x in run:
+		for y in x:
+			count = y
 	return render_template("sortby.html", count=count, order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])

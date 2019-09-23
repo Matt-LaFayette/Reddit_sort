@@ -48,16 +48,17 @@ function myFunction2() {
         console.log(division);
         $('.progress-bar').css('width', division+'%').attr('aria-valuenow', division);
         $('.progress-bar-label').text(division+'%');
-    }
-    catch {
-        console.error(error);
-    }
+        }
+        catch {
+            console.error(error);
+        }
         if(division == 100){
             source.close();
             document.getElementById("find").innerHTML = "Complete!";
             var divsToShow = document.getElementsById("go_home");
             for(var i = 0; i < divsToShow.length; i++){
                 divsToShow[i].style.visibility = "visible";
+            }
         }
     }
     </script>
