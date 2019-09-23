@@ -237,6 +237,11 @@ def close_db(error):
 @app.route('/topnav', methods=['GET', 'POST'])
 def topnav():
 	categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking', 'Raspberry Pi', 'Security', 'Projects', 'IT']
+	db = get_db()
+	run = db.execute('SELECT count(*) FROM posts;')
+	for x in run:
+		for y in x:
+			count = y
 	return render_template('topnav.html', count=count)
 
 
@@ -396,7 +401,7 @@ def createtable():
 	db = get_db()
 	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
 	db.commit()
-	return "Table \"Posts\" created<br/><button type='button'><a href='http://127.0.0.1:5000/devArea'>Go Back</a></button>"
+	return "Table \"Posts\" created<br/><button type='button'><a href='{{url_for('devArea')}}''>Go Back</a></button>"
 
 
 @app.route('/droptable')
