@@ -10,7 +10,7 @@
 <button type="button"><a href="{{url_for('droptable')}}">Drop Table</a></button>
 <button type="button"><a href="{{url_for('createtable')}}">Create table</a></button>
 <button type="button"><a href="{{url_for('addRedditInfo')}}">Add reddit info to table</a></button>
-<button type="button"><a href="{{url_for('viewresults')}}">View Results</a></button>
+<button type="button"><a href="{{url_for('viewresults', page_num=1, per_page_res=count))}}">View Results</a></button>
 <button type="button"><a href="{{url_for('deleteposts')}}">delete from db</a></button>
 <button type="button"><a href="{{url_for('unfavpost')}}">Unsave post from Reddit Account</a></button>
 <script>
