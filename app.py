@@ -1,10 +1,10 @@
-from flask import Flask, render_template, g, url_for, request, flash, redirect, Response
+from flask import Flask, render_template, g, url_for, request, flash, redirect, Response, current_app
 #from flask_wtf import Form
 import praw, jinja2
 import pprint
 import sqlite3
 import collections
-# from config import *
+from config import *
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template
 from flask_paginate import Pagination, get_page_args
@@ -26,11 +26,13 @@ if __name__ == "__main__":
 	app.run()
 app.debug = True
 
+with app.app_context():
+	print (current_app.name)
 
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\lafay\\Desktop\\Projects\\Reddit_sort\\data.db'
 db = SQLAlchemy(app)
 
 class posts(db.Model):
@@ -61,18 +63,18 @@ def get_results(offset=0, per_page=10):
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
-reddit = praw.Reddit(client_id=os.environ.get('client_id'),
-                      client_secret=os.environ.get('client_secret'),
-                      user_agent=os.environ.get('client_secret'),
-                      username=os.environ.get('username'),
-                      password=os.environ.get('password'))
+#reddit = praw.Reddit(client_id=os.environ.get('client_id'),
+#                      client_secret=os.environ.get('client_secret'),
+#                      user_agent=os.environ.get('client_secret'),
+#                      username=os.environ.get('username'),
+#                      password=os.environ.get('password'))
 
 
-#reddit = praw.Reddit(client_id=client_id,
-#                      client_secret=client_secret,
-#                      user_agent=client_secret,
-#                      username=username,
-#                      password=password)
+reddit = praw.Reddit(client_id=client_id,
+                      client_secret=client_secret,
+                      user_agent=client_secret,
+                      username=username,
+                      password=password)
 
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
@@ -197,10 +199,15 @@ def utility_functions():
 def inject_user():
     return dict(category=categories)
 
+def connect_db():
+	sql = sqlite3.connect('C:\\Users\\lafay\\Desktop\\Projects\\Reddit_sort\\data.db')
+	sql.row_factory = sqlite3.Row
+	return sql
+
 def get_db():
-	if not hasattr(g, 'sqlite3'):
-		g.sqlite_db = connect_db()
-	return g.sqlite_db
+# 	if not hasattr(g, 'sqlite3'):
+# 	g.sqlite_db = connect_db()
+ 	return connect_db()
 
 def posts_all():
 	db = get_db()
@@ -214,10 +221,7 @@ def posts_unsorted():
 	results2 = cur.fetchall()
 	return results2
 
-def connect_db():
-	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
-	sql.row_factory = sqlite3.Row
-	return sql
+
 
 
 
@@ -446,10 +450,10 @@ def sortby(page_num, per_page_res):
 	print(sort_cat)
 	per_page = per_page_res
 	t3 = posts.query.filter_by(category=sort_cat).order_by(order_by).paginate(per_page=per_page_res, page=page_num, error_out=True)
-	run = db.execute('SELECT count(*) FROM posts;')
-	for x in run:
-		for y in x:
-			count = y
+	# run = db.execute('SELECT count(*) FROM posts;')
+	# for x in run:
+	# 	for y in x:
+	# 		count = y
 	return render_template("sortby.html", count=count, order_by=order_by, t3=t3, per_page=per_page, posts=posts, zip=zip, sort_cat=sort_cat)
 
 @app.route('/deleteposts', methods=['GET', 'POST'])
