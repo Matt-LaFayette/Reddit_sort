@@ -401,7 +401,7 @@ def createtable():
 	db = get_db()
 	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
 	db.commit()
-	return "Table \"Posts\" created<br/><button type='button'><a href="{{url_for('devArea')}}">Go Back</a></button>"
+	return "Table \"Posts\" created<br/><button type='button'><a href="">Go Back</a></button>"
 
 
 @app.route('/droptable')
