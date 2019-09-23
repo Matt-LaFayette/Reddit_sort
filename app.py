@@ -263,7 +263,7 @@ def updateTable():
 					db.execute("UPDATE posts SET category = (?) WHERE title = (?);", (cat, post_title))
 					db.commit()
 			return redirect(url_for('updateTable'))
-	return render_template('updateTable.html', categories=categories, zip=zip, results=results, count=count, t3=t3, t4=t4)
+	return render_template('updateTable.html', categories=categories, zip=zip, results=results, t3=t3, t4=t4)
 
 @app.route('/updateTableUnsorted/<int:page_num>/<int:per_page_res>',  methods=['GET', 'POST'])
 def updateTableUnsorted(page_num, per_page_res):
