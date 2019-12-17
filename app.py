@@ -1,6 +1,6 @@
 from flask import Flask, render_template, g, url_for, request, flash, redirect, Response, current_app, jsonify
 import random, threading, time, praw, jinja2, pprint, sqlite3, collections
-from config import *
+# from config import *
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 from flask_sqlalchemy import SQLAlchemy
