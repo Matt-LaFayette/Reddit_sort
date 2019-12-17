@@ -31,7 +31,19 @@
 <div class="modal fade" id="{{str(x)}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" id="modal{{str(x)}}" role="document">
     <div class="modal-content">
-
+     {% for p,z,a,b in zip(imgkv.keys(), imgkv.values(), altimgkv.keys(), altimgkv.values()) %}
+      {% if x == p %}
+        {% if z != "" %}
+      <div class="modal-header" style="background-image: url({{z}}); background-size:cover;">
+        {% else %}
+          {% if x == a %}
+      <div class="modal-header" style="background-image: url({{b}}); background-size:cover;"> 
+        {% else %}
+        <div class="modal-header">
+        {% endif %}
+        {% endif %}
+        {% endif %}
+      {% endfor %}
         <h3 class="modal-title" id="exampleModalLabel" style="text-align: center; color: #b04c41">r/{{str(x)}} {{p}}</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
