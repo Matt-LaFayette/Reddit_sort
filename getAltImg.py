@@ -10,7 +10,7 @@ def getaltImg(subscribed):
 			results.append(post.subreddit.display_name)
 
 		counter = collections.Counter(results).most_common(10)
-		
+
 		# Adds images to img array
 		for x in counter:
 			img.append(x[0])

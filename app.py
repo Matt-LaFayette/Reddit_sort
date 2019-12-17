@@ -208,10 +208,10 @@ def close_db(error):
 count = 0
 db = get_db()
 
-run = db.execute('SELECT count(*) FROM posts;')
-for x in run:
-	for y in x:
-		count = y
+# run = db.execute('SELECT count(*) FROM posts;')
+# for x in run:
+# 	for y in x:
+# 		count = y
 
 
 @app.route('/topnav', methods=['GET', 'POST'])
