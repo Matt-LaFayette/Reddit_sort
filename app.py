@@ -374,7 +374,7 @@ def index():
 	print(count)
 
 
-	queue = rq.Queue('microblog-tasks', connection=Redis.from_url('redis://'))
+	queue = rq.Queue('microblog-tasks', connection=Redis.from_url(os.environ.get("REDIS_URL"))
 	subscribed = list(reddit.user.subreddits(limit=None))
 	datapass = queue.enqueue('tasks', subscribed)
 	# print(datapass)
