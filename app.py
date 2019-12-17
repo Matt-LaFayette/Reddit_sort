@@ -45,15 +45,7 @@ def get_results(offset=0, per_page=10):
     return results[offset: offset + per_page]
 
 
-run = db.execute('SELECT count(*) FROM posts;')
 
-
-
-# Counting all the posts
-for x in run:
-	for y in x:
-		count = y
-print(count)
 
 
 bootstrap = Bootstrap(app)
@@ -215,10 +207,11 @@ def close_db(error):
 
 count = 0
 db = get_db()
-# run = db.execute('SELECT count(*) FROM posts;')
-# for x in run:
-# 	for y in x:
-# 		count = y
+
+run = db.execute('SELECT count(*) FROM posts;')
+for x in run:
+	for y in x:
+		count = y
 
 
 @app.route('/topnav', methods=['GET', 'POST'])
