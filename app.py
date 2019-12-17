@@ -1,24 +1,11 @@
-from flask import Flask, render_template, g, url_for, request, flash, redirect, Response, current_app
-#from flask_wtf import Form
-import praw, jinja2
-import pprint
-import sqlite3
-import collections
-# from config import *
+from flask import Flask, render_template, g, url_for, request, flash, redirect, Response, current_app, jsonify
+import random, threading, time, praw, jinja2, pprint, sqlite3, collections
+from config import *
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template
 from flask_paginate import Pagination, get_page_args
-#from flask_wtf import FlaskForm
-#from wtforms import StringField, PasswordField, BooleanField, SubmitField
-#from wtforms.validators import DataRequired
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import random
-import threading
-import time
-from flask import jsonify
-import os
-
+from redis import Redis
+import rq, os
 
 
 app = Flask(__name__)
@@ -32,7 +19,7 @@ with app.app_context():
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\lafay\\Desktop\\Projects\\Reddit_sort\\data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db'
 db = SQLAlchemy(app)
 
 class posts(db.Model):
@@ -63,18 +50,18 @@ def get_results(offset=0, per_page=10):
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
+# reddit = praw.Reddit(client_id=client_id,
+#                       client_secret=client_secret,
+#                       user_agent=user_agent,
+#                       username=username,
+#                       password=password)
+
 reddit = praw.Reddit(client_id=os.environ.get('client_id'),
                       client_secret=os.environ.get('client_secret'),
                       user_agent=os.environ.get('client_secret'),
                       username=os.environ.get('username'),
                       password=os.environ.get('password'))
 
-
-#reddit = praw.Reddit(client_id=client_id,
-#                      client_secret=client_secret,
-#                      user_agent=client_secret,
-#                      username=username,
-#                      password=password)
 
 test = reddit.redditor('here_comes_ice_king').saved(limit=None)
 subscribed = list(reddit.user.subreddits(limit=None))
@@ -91,6 +78,7 @@ class DataStore():
 data = DataStore()
 
 count_list = []
+
 for post in test:
 	link = 'https://www.reddit.com' + post.permalink
 	title = trim_title(post.title)
@@ -108,17 +96,18 @@ for post in test:
 	#count_list.append((str(db.execute('SELECT changes();'))))
 	#print(count_list.count())
 	count_list.append(db.execute('SELECT changes();'))
+	print("i'm running outside the app")
 
 	
 
-
-counter = collections.Counter(results).most_common(10)
 
 name_list = []
 value_list = []
 desc_list = []
 html_list = []
 css_list = []
+
+counter = collections.Counter(results).most_common(10)
 
 for x,y in counter:
 	name_list.append(x)
@@ -130,6 +119,8 @@ for b in name_list:
 	desc_list.append(reddit.subreddit(b).public_description)
 	html_list.append(reddit.subreddit(b).description_html)
 	css_list.append(reddit.subreddit(b).stylesheet())
+
+
 
 #prints avail dicts
 	#pp.pprint(reddit.redditor('here_comes_ice_king').saved())
@@ -146,35 +137,11 @@ categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking
 # from index.html not sure if it makes it faster or slower
 
 
-test = reddit.redditor('here_comes_ice_king').saved(limit=None)
-subscribed = list(reddit.user.subreddits(limit=None))
 
-sub_list = []
-img = []
-results = []
 
-for post in test:
-	results.append(post.subreddit.display_name)
 
-counter = collections.Counter(results).most_common(10)
 
-for x in counter:
-	img.append(x[0])
 
-for x in subscribed:
-	sub_list.append(x.display_name)
-
-bkgrnd = []
-imgkv = {}
-altimgkv = {}
-
-for i in subscribed:
-	for x in range (0,len(img)):
-		#print (i.display_name + " : " + img[x])
-		if img[x] == i.display_name:
-			bkgrnd.append(str(i.banner_background_image))
-			imgkv[i.display_name] = i.banner_background_image
-			altimgkv[i.display_name] = i.community_icon
 
 
 
@@ -200,7 +167,7 @@ def inject_user():
     return dict(category=categories)
 
 def connect_db():
-	sql = sqlite3.connect('C:\\Users\\lafay\\Desktop\\Projects\\Reddit_sort\\data.db')
+	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
 	sql.row_factory = sqlite3.Row
 	return sql
 
@@ -394,17 +361,45 @@ def index():
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
 	env.globals.update(str=str)
-	t4 = posts.query.filter_by(category="None").all()
+
 	db = get_db()
 	run = db.execute('SELECT count(*) FROM posts;')
+
+
+
+	# Counting all the posts
 	for x in run:
 		for y in x:
 			count = y
 	print(count)
-	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
+
+
+	queue = rq.Queue('microblog-tasks', connection=Redis.from_url('redis://'))
+	subscribed = list(reddit.user.subreddits(limit=None))
+	datapass = queue.enqueue('tasks', subscribed)
+	# print(datapass)
+
+	if datapass.is_finished:
+		print(datapass[0])
+	
+	
+
+	altimgkv = queue.enqueue('getAltImg', subscribed)
+	bkgrnd = queue.enqueue('background', subscribed)
+	imgkv = queue.enqueue('get_img', subscribed)
+
+	while altimgkv is None:
+		pass
+
+
+
+	# altimgkv = queue.enqueue('getAltImg', subscribed)
+	# bkgrnd = queue.enqueue('background', subscribed)
+	# imgkv = queue.enqueue('get_img', subscribed)
+	
 	#for x in test:
 	#	pp.pprint(vars(x))
-	return render_template('index.html', count=count, altimgkv=altimgkv, imgkv=imgkv, bkgrnd=bkgrnd, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
+	return render_template('index.html', count=count, altimgkv=altimgkv, bkgrnd=bkgrnd, imgkv=imgkv, desc_list=desc_list, name_list=name_list, value_list=value_list, zip=zip, str=str)
 
 
 @app.route('/createtable')
