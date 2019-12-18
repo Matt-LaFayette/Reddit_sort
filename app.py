@@ -213,7 +213,7 @@ for x in sql:
 	print ('sql = ' + x)
 	 	# for y in x:
 	 	# 	count = y
-
+count = 20
 # run = db.execute('SELECT count(*) FROM posts;')
 # for x in run:
 # 	for y in x:
@@ -385,6 +385,10 @@ def index():
 			count = y
 	print(count)
 
+	sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
+	# if (sql[0] == posts):
+	for x in sql:
+	print ('sql = ' + x)
 
 	queue = rq.Queue('microblog-tasks', connection=Redis.from_url(os.environ.get("REDIS_URL")))
 	subscribed = list(reddit.user.subreddits(limit=None))
