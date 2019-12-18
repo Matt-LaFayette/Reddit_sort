@@ -205,15 +205,26 @@ def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()		
 
+
+
 count = 0
-db = get_db()
-sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
+
+def getCount():
+	db = get_db()
+	sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
+	for x in sql:
+		for y in sql:
+			if (y == 'posts')
+				run = db.execute('SELECT count(*) FROM posts;')
+				for x in run:
+					for y in x:
+						count = y
+	return count
+
+
 # if (sql[0] == posts):
-for x in sql:
-	print ('sql = ' + x)
-	 	# for y in x:
-	 	# 	count = y
-count = 20
+
+
 # run = db.execute('SELECT count(*) FROM posts;')
 # for x in run:
 # 	for y in x:
@@ -380,10 +391,7 @@ def index():
 
 
 	# Counting all the posts
-	for x in run:
-		for y in x:
-			count = y
-	print(count)
+	count = getCount();
 
 	sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
 	# if (sql[0] == posts):
@@ -438,8 +446,9 @@ def droptable():
 def viewresults(page_num, per_page_res):
 	env = jinja2.Environment()
 	env.globals.update(zip=zip)
+	count = getCount();
 	t3 = posts.query.paginate(per_page=per_page_res, page=page_num, error_out=True)
-	return render_template('viewresults.html', zip=zip, t3=t3)
+	return render_template('viewresults.html', count=count, zip=zip, t3=t3)
 
 @app.route('/devArea')
 def devArea():
