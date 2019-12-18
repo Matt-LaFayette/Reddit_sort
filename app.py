@@ -317,9 +317,10 @@ def updateTableUnsorted(page_num, per_page_res):
 def addRedditInfo():
 
 	queue = rq.Queue('microblog-tasks', connection=Redis.from_url(os.environ.get("REDIS_URL")))
-	queue.enqueue('addposts')
+	job = queue.enqueue('addposts')
 
-
+	while job is None:
+		pass
 	
 	#if len(count_list)==0:
 	#	count_list.append(100)
@@ -330,6 +331,8 @@ def addRedditInfo():
 @app.route('/progress_append')
 def progress_append():
 	def generate():
+		# need this to pull from the dev area page
+		data.a = 800
 		for x in range(0, data.a):
 			yield "data:" + str(x) + "\n\n"
 	return Response(generate(), mimetype= 'text/event-stream')
