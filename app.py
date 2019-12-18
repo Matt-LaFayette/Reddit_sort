@@ -388,7 +388,7 @@ def index():
 	sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
 	# if (sql[0] == posts):
 	for x in sql:
-		print ('sql = ' + x)
+		print ('sql = ' + str(x))
 
 	queue = rq.Queue('microblog-tasks', connection=Redis.from_url(os.environ.get("REDIS_URL")))
 	subscribed = list(reddit.user.subreddits(limit=None))
