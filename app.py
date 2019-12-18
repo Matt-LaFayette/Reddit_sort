@@ -208,10 +208,11 @@ def close_db(error):
 count = 0
 db = get_db()
 sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
-if (sql[0] == posts):
-	for x in sql:
-	 	for y in x:
-	 		count = y
+# if (sql[0] == posts):
+for x in sql:
+	print x
+	 	# for y in x:
+	 	# 	count = y
 
 # run = db.execute('SELECT count(*) FROM posts;')
 # for x in run:
