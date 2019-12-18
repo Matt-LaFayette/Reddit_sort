@@ -14,8 +14,9 @@
 <button type="button"><a href="{{url_for('unfavpost')}}">Unsave post from Reddit Account</a></button>
 <script>
 function myFunction() {
+    var site = '{{url_for('progress_append')}}';
     $('.test').on('click', function(e) { pace.start(); });
-    $.ajax({ url : {{url_for('progress_append')}}, type : 'GET'});
+    $.ajax({ url : site, type : 'GET'});
 }
 </script>
 <button type="button" class="test" onclick="myFunction(), myFunction2()">test</button>
