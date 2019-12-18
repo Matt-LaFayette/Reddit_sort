@@ -5,7 +5,12 @@ from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
-import rq, os
+import rq, os, psycopg2
+
+
+DATABASE_URL = os.environ['DATABASE_URL']
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 
 app = Flask(__name__)
