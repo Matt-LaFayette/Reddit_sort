@@ -214,7 +214,7 @@ def getCount():
 	sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
 	for x in sql:
 		for y in sql:
-			if (y == 'posts')
+			if (y == 'posts'):
 				run = db.execute('SELECT count(*) FROM posts;')
 				for x in run:
 					for y in x:
