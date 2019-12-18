@@ -33,14 +33,14 @@ function myFunction2() {
         for(var i = 0; i < divsToShow.length; i++){
         divsToShow[i].style.visibility = "visible"; // or
     }
-    document.getElementsByClassName("select").innerHTML = "Loading Please Wait..."
+    document.getElementsByClassName("select").innerHTML = "Loading Please Wait...";
 }
 
 </script>
 <!-- need to change hard coded total value 849 -->
     <script>
 
-    var source = new EventSource("/progress_append");
+    var source = new EventSource({{url_for('progress_append')}});
     source.onmessage = function(event) {
         try{
         var division = Math.ceil((event.data/849 * 100));
