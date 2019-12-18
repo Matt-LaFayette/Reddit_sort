@@ -315,38 +315,15 @@ def updateTableUnsorted(page_num, per_page_res):
 
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
-	test = reddit.redditor('here_comes_ice_king').saved(limit=None)
-	db = get_db()
-	count_list = []
-	for post in test:
-		link = 'https://www.reddit.com' + post.permalink
-		title = trim_title(post.title)
-		empty = "None"
-		date_added = post.created_utc
-		thread_text = post.selftext
-		image = ""
-		#add_count = add_count + 1
-		if str(post.is_self) == "False":
-			try:
-				image = (post.preview['images'][0]['source']['url'])
-			except:
-				print("none provided")
-		db.execute('insert or ignore into posts (id, title, link, category, date_added, thread_text, image) values (?, ?, ?, ?, ?, ?, ?)', [str(post), title, link, empty, date_added, thread_text, image])
-		#count_list.append((str(db.execute('SELECT changes();'))))
-		#print(count_list.count())
-		chng = db.execute('SELECT changes();')
-		for x in chng:
-			for y in x:
-				if (y == 1):
-					count_list.append(db.execute('SELECT changes();'))
-		data.a = (len(count_list))
-		print (data.a)
+
+	queue.enqueue('addposts')
+
+
+	
 	#if len(count_list)==0:
 	#	count_list.append(100)
 	#	data.a = count_list[0]
-	print (count_list)
-	db.commit()
-	print (data.a)
+	
 	return "complete! <button><a href='https://127.0.0.1:5000/devArea'>Go Back</a></button>"
 
 @app.route('/progress_append')
