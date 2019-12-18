@@ -219,7 +219,7 @@ for x in sql:
 # 	for y in x:
 # 		count = y
 
-@app.route('/lateload', ethods=['GET', 'POST'])
+@app.route('/lateload', methods=['GET', 'POST'])
 def lateload():
 	return 'page'
 
