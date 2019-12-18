@@ -210,7 +210,7 @@ db = get_db()
 sql = db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='posts';")
 # if (sql[0] == posts):
 for x in sql:
-	print (x)
+	print ('sql = ' + x)
 	 	# for y in x:
 	 	# 	count = y
 
