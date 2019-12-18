@@ -13,18 +13,24 @@ DATABASE_URL = os.environ['DATABASE_URL']
 conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 
 
+db = SQLAlchemy()
+
 app = Flask(__name__)
 if __name__ == "__main__":
 	app.run()
 app.debug = True
 
+
 with app.app_context():
 	print (current_app.name)
+
+
+
 
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cfrpvqibrmhusu:8ad129dba1e1b695658d7d37c5b29605e10451e1215e348d5fdfad40794d5e6f@ec2-184-73-176-11.compute-1.amazonaws.com:5432/d9lk1hiqr3ehl2'
 db = SQLAlchemy(app)
 
 class posts(db.Model):
