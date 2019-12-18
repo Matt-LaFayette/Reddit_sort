@@ -316,6 +316,7 @@ def updateTableUnsorted(page_num, per_page_res):
 @app.route('/addRedditInfo', methods=['GET', 'POST'])
 def addRedditInfo():
 
+	queue = rq.Queue('microblog-tasks', connection=Redis.from_url(os.environ.get("REDIS_URL")))
 	queue.enqueue('addposts')
 
 
