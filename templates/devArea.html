@@ -41,7 +41,7 @@ function myFunction2() {
 <!-- need to change hard coded total value 849 -->
     <script>
 
-    var source = new EventSource({{url_for('progress_append')}});
+    var source = new EventSource('{{url_for('progress_append')}}');
     source.onmessage = function(event) {
         try{
         var division = Math.ceil((event.data/849 * 100));
