@@ -1,31 +1,24 @@
 import psycopg2
-
-def create_tables():
-    """ create tables in the PostgreSQL database"""
-    commands = (
-        """
-        CREATE DATABASE t
-        """,
-        """
-        CREATE TABLE vendors (
-            vendor_id SERIAL PRIMARY KEY,
-            vendor_name VARCHAR(255) NOT NULL
-        )
-        """,
-        """
-        COMMIT
-        """
-        )
+import urllib.parse
+import os
 
 
 
+result = urllib.parse.urlparse("postgres://cfrpvqibrmhusu:8ad129dba1e1b695658d7d37c5b29605e10451e1215e348d5fdfad40794d5e6f@ec2-184-73-176-11.compute-1.amazonaws.com:5432/d9lk1hiqr3ehl2")
 
+print(result)
 try:
-    connection = psycopg2.connect(user = "cfrpvqibrmhusu",
-                                  password = "8ad129dba1e1b695658d7d37c5b29605e10451e1215e348d5fdfad40794d5e6f",
-                                  host = "ec2-184-73-176-11.compute-1.amazonaws.com",
-                                  port = "5432",
-                                  database = "d9lk1hiqr3ehl2")
+    username = result.username
+    password = result.password
+    database = result.path[1:]
+    hostname = result.hostname
+    print(hostname)
+    connection = psycopg2.connect(
+        database = database,
+        user = username,
+        password = password,
+        host = hostname
+    )
 
     cursor = connection.cursor()
     # Print PostgreSQL Connection properties
