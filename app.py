@@ -30,7 +30,7 @@ with app.app_context():
 pp = pprint.PrettyPrinter(indent=4)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://cfrpvqibrmhusu:8ad129dba1e1b695658d7d37c5b29605e10451e1215e348d5fdfad40794d5e6f@ec2-184-73-176-11.compute-1.amazonaws.com:5432/d9lk1hiqr3ehl2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://bf7c9445953141:59b50d69@us-cdbr-iron-east-05.cleardb.net/heroku_5196099a3078d00?reconnect=true'
 db = SQLAlchemy(app)
 
 class posts(db.Model):
@@ -149,15 +149,6 @@ categories = ['None', 'Funny', 'Food', 'Gaming', 'Programming', 'Console Hacking
 # from index.html not sure if it makes it faster or slower
 
 
-
-
-
-
-
-
-
-
-
 class DataStore():
     a = None
     c = None
@@ -178,15 +169,15 @@ def utility_functions():
 def inject_user():
     return dict(category=categories)
 
-def connect_db():
-	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
-	sql.row_factory = sqlite3.Row
-	return sql
+# def connect_db():
+# 	sql = sqlite3.connect('C:\\Users\\MGLafayette\\Desktop\\Projects\\Flask\\data.db')
+# 	sql.row_factory = sqlite3.Row
+# 	return sql
 
-def get_db():
-# 	if not hasattr(g, 'sqlite3'):
-# 	g.sqlite_db = connect_db()
- 	return connect_db()
+# def get_db():
+# # 	if not hasattr(g, 'sqlite3'):
+# # 	g.sqlite_db = connect_db()
+#  	return connect_db()
 
 def posts_all():
 	db = get_db()
@@ -343,7 +334,7 @@ def addRedditInfo():
 def progress_append():
 	def generate():
 		# need this to pull from the dev area page
-		data.a = 800
+		# data.a = 800
 		for x in range(0, data.a):
 			yield "data:" + str(x) + "\n\n"
 	return Response(generate(), mimetype= 'text/event-stream')
