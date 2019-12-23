@@ -452,7 +452,6 @@ def devArea():
 	bring_in_count = 0
 	for post in test:
 		bring_in_count = bring_in_count + 1
-	db = get_db()
 	total_count = db.execute('SELECT count(*) FROM posts;')
 	for x in total_count:
 		for y in x:
