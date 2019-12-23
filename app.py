@@ -413,7 +413,8 @@ def index():
 
 @app.route('/createtable')
 def createtable():
-	cur = db.execute('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
+	sql = text('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
+	db.engine.execute(sql)
 	db.commit()
 	return "Table \"Posts\" created<br/><button type='button'><a href="">Go Back</a></button>"
 
