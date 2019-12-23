@@ -35,6 +35,15 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://bf7c9445953141:59b50d69@us-cdbr-iron-east-05.cleardb.net/heroku_5196099a3078d00?reconnect=true'
 db = SQLAlchemy(app)
 
+
+try:
+	db.create_all()
+	db.commit()
+	db.close()
+except:
+	print("database already exists")
+
+
 class posts(db.Model):
     id = db.Column(db.String, primary_key=True)
     title = db.Column(db.String(80), unique=True, nullable=False)
@@ -415,7 +424,7 @@ def index():
 
 @app.route('/createtable')
 def createtable():
-	sql = text('CREATE TABLE IF NOT EXISTS posts (id VARCHAR primary key unique, title VARCHAR, link VARCHAR, category VARCHAR, date_added VARCHAR, thread_text VARCHAR, image VARCHAR)')
+	sql = text('CREATE TABLE IF NOT EXISTS posts (id VARCHAR(120) primary key unique, title VARCHAR(120), link VARCHAR(120), category VARCHAR(120), date_added VARCHAR(120), thread_text VARCHAR(120), image VARCHAR(120))')
 	db = create_engine('mysql://bf7c9445953141:59b50d69@us-cdbr-iron-east-05.cleardb.net/heroku_5196099a3078d00?reconnect=true')
 	db.execute(sql)
 	db.commit()
