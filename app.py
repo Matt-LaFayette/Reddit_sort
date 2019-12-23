@@ -1,12 +1,13 @@
 from flask import Flask, render_template, g, url_for, request, flash, redirect, Response, current_app, jsonify
-import random, threading, time, praw, jinja2, pprint, sqlite3, collections
+import random, threading, time, praw, jinja2, pprint, collections
 # from config import *
 from flask_bootstrap import Bootstrap
 from flask_paginate import Pagination, get_page_args
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
 import rq, os, psycopg2
-from sqlalchemy import text
+import sqlalchemy
+from sqlalchemy import create_engine
 
 
 # DATABASE_URL = os.environ['DATABASE_URL']
@@ -415,6 +416,7 @@ def index():
 @app.route('/createtable')
 def createtable():
 	sql = text('CREATE TABLE IF NOT EXISTS posts (id text primary key unique, title text, link text, category text, date_added int, thread_text TEXT, image text)')
+	db = create_engine('mysql://bf7c9445953141:59b50d69@us-cdbr-iron-east-05.cleardb.net/heroku_5196099a3078d00?reconnect=true')
 	db.execute(sql)
 	db.commit()
 	return "Table \"Posts\" created<br/><button type='button'><a href="">Go Back</a></button>"
